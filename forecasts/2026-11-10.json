@@ -1,0 +1,225 @@
+{
+  "edition_date": "2026-11-10",
+  "meta": {
+    "run_date": "2026-11-10",
+    "model_requested": "claude-fable-5-2",
+    "model_returned": [
+      "claude-haiku-5-5",
+      "claude-fable-5-2"
+    ],
+    "effort": "high",
+    "searches": 24,
+    "fetches": 20,
+    "attempts": 1,
+    "cli_version": "2.1.312 (Claude Code)",
+    "prompt_sha256": "94c79f45dd258be3f66c952dc46f2cb8c5cb93b9205de0c9c397713f4a8c7246",
+    "edition_sha256": "da9fee70bac71a406cb744d4a35bae54f9bf923635ec78fa527cceb25c26c2db"
+  },
+  "content": {
+    "target_year": "2027",
+    "headline": "The biggest difference would be the year-long ceasefire: about 15 state-based conflicts in 2027 instead of about 63, and roughly 16 million fewer displaced people, while the warming projection, the energy investment ratio and the warhead total would barely move.",
+    "caveat": "The baseline depends on whether the Iran and Ukraine wars end in the coming months, and several sources revise past figures by more than one year's change (poverty, hunger, warheads). The with-plan numbers rest on untestable assumptions: how statisticians would book the levy, whether cash worth 11% of GDP keeps its value, and how many ceasefires break in the seven weeks between day 365 and 31 December 2027. I could not open the OECD or SIPRI PDFs, so some trend figures come from secondary coverage.",
+    "indicators": [
+      {
+        "id": 1,
+        "unit": "million people below $3.00 a day (World Bank)",
+        "latest": {
+          "value": 811,
+          "data_year": "2026 (World Bank nowcast, October 2026)"
+        },
+        "baseline": {
+          "value": 808,
+          "low": 778,
+          "high": 838
+        },
+        "with_plan": {
+          "value": 670,
+          "low": 560,
+          "high": 780
+        },
+        "resolves": "World Bank Poverty and Inequality Platform: first nowcast for 2027 in the update expected around September 2027 (the September 2026 update carried nowcasts to 2026). Survey-based figures follow from about 2029.",
+        "reasoning": "The Bank's September 2026 vintage has 824.3 million in 2024 and its October report 811 million in 2026, with the rate flat since 2019 and the count projected higher by 2030, so I hold it roughly flat; one vintage change alone moved 2024 by 22.5 million. In the plan, cash reaches most of the poorest from April 2027, but it is sized to the old $2.15 line, covers under nine months of 2027 and risks local inflation. I therefore assume only part of the recipients clear $3.00 on a full-year measure."
+      },
+      {
+        "id": 2,
+        "unit": "million deaths of children under five in the year (UN IGME)",
+        "latest": {
+          "value": 4.9,
+          "data_year": "2024"
+        },
+        "baseline": {
+          "value": 4.8,
+          "low": 4.6,
+          "high": 5
+        },
+        "with_plan": {
+          "value": 4.55,
+          "low": 4.3,
+          "high": 4.8
+        },
+        "resolves": "UN IGME Levels and Trends in Child Mortality report covering 2027, expected about March 2029 (the March 2026 edition covered 2024).",
+        "reasoning": "IGME gave 4.8 million for 2023 and 4.9 million for 2024 with the decline slowed by more than 60% since 2015, and the 2025 aid cuts are not yet in the data, so I expect near-stagnation. The plan adds cash from April 2027, a fully funded humanitarian appeal, ceasefire access, and Gavi and Global Fund money. I assume a fraction of the Kenyan trial effect at scale for part of the year, about 0.25 million fewer deaths, which IGME's smoothed estimates would only partly show."
+      },
+      {
+        "id": 3,
+        "unit": "million people undernourished (FAO SOFI central estimate)",
+        "latest": {
+          "value": 645,
+          "data_year": "2025"
+        },
+        "baseline": {
+          "value": 650,
+          "low": 615,
+          "high": 690
+        },
+        "with_plan": {
+          "value": 585,
+          "low": 525,
+          "high": 645
+        },
+        "resolves": "SOFI 2028, expected July 2028 (SOFI 2026 was launched on 21 July 2026 with 2025 data).",
+        "reasoning": "Prevalence fell from 8.1% in 2024 to 7.8% in 2025, but the 2026 energy and fertiliser shock from the Iran war and the aid cuts should stall that, and FAO's own 2025 range is 608 to 696 million. In the plan, Hormuz reopens in November 2026, the humanitarian appeal is fully funded, ceasefires open Sudan and Gaza, and cash reaches the poorest for under nine months of 2027. I allow for food price rises in recipient countries cancelling part of the gain."
+      },
+      {
+        "id": 4,
+        "unit": "million people forcibly displaced at end of year (UNHCR)",
+        "latest": {
+          "value": 117.8,
+          "data_year": "End of 2025"
+        },
+        "baseline": {
+          "value": 116,
+          "low": 109,
+          "high": 123
+        },
+        "with_plan": {
+          "value": 100,
+          "low": 90,
+          "high": 109
+        },
+        "resolves": "UNHCR Global Trends report with end-2027 figures, expected June 2028.",
+        "reasoning": "The total fell from 123.2 million to 117.8 million in 2025 on 14.7 million returns; new displacement from the Iran war and Lebanon in 2026 roughly offsets continued returns to Syria and Sudan, so I expect little net change. A year of ceasefires would nearly stop new conflict displacement and speed returns of internally displaced people. Frozen front lines, work rights in host countries, the ban on forced returns and some fighting resuming after 9 November 2027 limit the fall."
+      },
+      {
+        "id": 5,
+        "unit": "number of state-based armed conflicts in the year (UCDP)",
+        "latest": {
+          "value": 65,
+          "data_year": "2025"
+        },
+        "baseline": {
+          "value": 63,
+          "low": 57,
+          "high": 68
+        },
+        "with_plan": {
+          "value": 15,
+          "low": 6,
+          "high": 28
+        },
+        "resolves": "UCDP annual data release for 2027, expected June 2028 (the 2025 figures came out on 9 June 2026).",
+        "reasoning": "The count rose from 59 in 2023 to a record 65 in 2025 and changes slowly; talks on Iran and Ukraine began this month but neither war nor Sudan's has stopped, so I expect only slight easing from the record. Under the plan there is no offensive action from 13 November 2026 to 9 November 2027. A conflict then counts only if it resumes and reaches 25 battle deaths in the last seven weeks of 2027, which I expect for about half the 13 wars and a handful of smaller conflicts."
+      },
+      {
+        "id": 6,
+        "unit": "US$ billion in the year, OECD DAC members, current prices",
+        "latest": {
+          "value": 174.3,
+          "data_year": "2025 (preliminary)"
+        },
+        "baseline": {
+          "value": 158,
+          "low": 147,
+          "high": 169
+        },
+        "with_plan": {
+          "value": 265,
+          "low": 160,
+          "high": 315
+        },
+        "resolves": "OECD preliminary ODA release for 2027, expected April 2028; final data in December 2028.",
+        "reasoning": "The OECD's June 2026 projection is about $152bn for 2026 in constant 2024 prices and roughly 10% below 2025 by 2028, Devpolicy's central case for 2027 is $139bn, and I converted to current dollars with the 2025 deflator plus two years of inflation. In the plan the US and European NATO alone pay about $151bn of the levy, which funds aid-eligible spending mostly disbursed in 2027, and donors may not cut existing aid. The range is deliberately two-sided: if the OECD books the levy in December 2026 when it is paid, or not as ODA at all, 2027 stays near the baseline."
+      },
+      {
+        "id": 7,
+        "unit": "US$ billion in the year, current prices (SIPRI)",
+        "latest": {
+          "value": 2887,
+          "data_year": "2025"
+        },
+        "baseline": {
+          "value": 3350,
+          "low": 3180,
+          "high": 3520
+        },
+        "with_plan": {
+          "value": 3185,
+          "low": 2980,
+          "high": 3400
+        },
+        "resolves": "SIPRI Trends in World Military Expenditure for 2027, expected late April 2028.",
+        "reasoning": "Spending has risen eleven years running, Europe grew 14% in 2025, US approved spending for 2026 is over $1 trillion and the Iran war added tens of billions; after the midterms the $1.5 trillion US request for fiscal 2027 looks dead, so I assume about 7 to 8% nominal growth a year. The levy is paid in December 2026, so much of it lands in 2026 accounts. I assume about half is absorbed in 2027 budgets and the ceasefire saves some operating costs, partly offset by rearmament ahead of day 366."
+      },
+      {
+        "id": 8,
+        "unit": "ratio: clean energy investment divided by fossil fuel investment (IEA)",
+        "latest": {
+          "value": 1.83,
+          "data_year": "2026 (IEA estimate; 2.2 / 1.2 from rounded figures)"
+        },
+        "baseline": {
+          "value": 1.88,
+          "low": 1.72,
+          "high": 2.02
+        },
+        "with_plan": {
+          "value": 1.92,
+          "low": 1.75,
+          "high": 2.07
+        },
+        "resolves": "IEA World Energy Investment 2027, expected late May or June 2027, which gives the first full-year estimate for 2027.",
+        "reasoning": "The IEA has clean at $2.2 trillion and fossil at about $1.2 trillion for 2026, with clean growing 4 to 7% while gas and coal supply investment hit multi-year highs on energy security, so I expect a small rise in the ratio. The plan reopens Hormuz and prices fuel at cost, which should trim fossil investment plans slightly. The IEA estimate is published about six months into the year and most 2027 spending is already committed, so the effect is marginal."
+      },
+      {
+        "id": 9,
+        "unit": "degrees Celsius of warming this century under current policies (UNEP Emissions Gap Report)",
+        "latest": {
+          "value": 2.8,
+          "data_year": "2026 report (published 21 October 2026)"
+        },
+        "baseline": {
+          "value": 2.8,
+          "low": 2.7,
+          "high": 2.9
+        },
+        "with_plan": {
+          "value": 2.8,
+          "low": 2.7,
+          "high": 2.9
+        },
+        "resolves": "UNEP Emissions Gap Report 2027, expected October or November 2027.",
+        "reasoning": "The current-policies figure was 3.1°C in the 2024 report and 2.8°C in both the 2025 and 2026 reports, and it moves by 0.1°C steps mainly on method changes and large policy shifts. My plan does not move it: the subsidy swap expires on day 365 unless countries adopt it, its modelled effect is 6% of CO2 by 2035, and the report's policy cut-off falls before any adoption votes. Same number as the baseline."
+      },
+      {
+        "id": 10,
+        "unit": "nuclear warheads, total world inventory in January 2028 (SIPRI)",
+        "latest": {
+          "value": 12187,
+          "data_year": "January 2026"
+        },
+        "baseline": {
+          "value": 12130,
+          "low": 11950,
+          "high": 12330
+        },
+        "with_plan": {
+          "value": 12030,
+          "low": 11700,
+          "high": 12350
+        },
+        "resolves": "SIPRI Yearbook 2028, expected mid-June 2028, giving the January 2028 inventory.",
+        "reasoning": "SIPRI's totals went 12,405 (January 2024, revised), 12,241 and 12,187, a shrinking decline that SIPRI expects to reverse as dismantlement slows and China builds; SIPRI also revised one past total by 284. The plan does not order cuts: de-alerting and New START limits change deployment, not the total. Only the published dismantlement schedule for retired warheads trims it a little, and nine official declarations could shift SIPRI's estimates either way, so the range is wider."
+      }
+    ]
+  }
+}
