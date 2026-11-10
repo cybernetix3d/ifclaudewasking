@@ -23,7 +23,7 @@ const {
   jsonLd = [],
 } = Astro.props;
 const ORIGIN = "https://ifclaudewasking.com";
-const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "").replace(/\/$/, "") || "/";
 const nav = [
   [latest ? `/editions/${latest.edition_date}` : "/editions", "Latest edition"],
   ["/editions", "All editions"],
