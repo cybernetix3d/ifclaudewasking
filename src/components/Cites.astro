@@ -1,0 +1,9 @@
+---
+interface Props {
+  ids: number[];
+}
+const { ids } = Astro.props;
+---
+{ids.length > 0 && (
+  <sup>[{ids.map((id, i) => <>{i > 0 && ", "}<a href={`#source-${id}`} aria-label={`Source ${id}`}>{id}</a></>)}]</sup>
+)}

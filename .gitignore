@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+editions/raw/failed/
+.vercel/
+public/edition-zero/

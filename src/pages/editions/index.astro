@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import { answeringModel, editions, formatDate, formatBillions } from "../../lib/editions";
+---
+<Base title="Editions">
+  <header class="lead">
+    <p class="eyebrow">Timeline</p>
+    <h1>Every edition</h1>
+    <p class="standfirst">Newest first. Each one is the same prompt, answered on its run date with web research, and published unedited.</p>
+  </header>
+  {editions.length === 0 ? (
+    <div class="panel soft"><p>No editions yet. The first one is coming.</p></div>
+  ) : (
+    <ol class="timeline">
+      {editions.map((e) => (
+        <li>
+          <a class="card" href={`/editions/${e.edition_date}`}>
+            <div class="date">{formatDate(e.edition_date)}</div>
+            <div class="runfacts" style="margin-top:10px">
+              <span class="chip">{answeringModel(e)}</span>
+              <span class="chip"><b class="num">{e.content.decrees.length}</b> decrees</span>
+              <span class="chip">{formatBillions(e.content.budget.total_annual_cost_usd_billion)} a year</span>
+            </div>
+            <p class="sum">{e.content.summary}</p>
+          </a>
+        </li>
+      ))}
+    </ol>
+  )}
+  <p class="muted small" style="margin-top:32px">Before the series began there was <a href="/edition-zero/seven-weeks-as-king.html">edition zero</a>, a one-off answer to a different question. It is not part of this timeline.</p>
+</Base>

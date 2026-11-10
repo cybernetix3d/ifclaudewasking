@@ -1,0 +1,14 @@
+---
+import Base from "../../layouts/Base.astro";
+import EditionView from "../../components/EditionView.astro";
+import { editions, formatDate } from "../../lib/editions";
+import type { Edition } from "../../lib/types";
+
+export function getStaticPaths() {
+  return editions.map((edition) => ({ params: { date: edition.edition_date }, props: { edition } }));
+}
+const { edition } = Astro.props as { edition: Edition };
+---
+<Base title={`Edition of ${formatDate(edition.edition_date)}`} description={edition.content.summary}>
+  <EditionView edition={edition} />
+</Base>

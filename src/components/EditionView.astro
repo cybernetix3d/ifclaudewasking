@@ -1,0 +1,129 @@
+---
+import type { Edition } from "../lib/types";
+import { answeringModel, formatBillions, formatDate, helperModels } from "../lib/editions";
+import Cites from "./Cites.astro";
+
+interface Props {
+  edition: Edition;
+  heading?: string;
+}
+const { edition, heading } = Astro.props;
+const { content: c, meta } = edition;
+const decrees = [...c.decrees].sort((a, b) => a.rank - b.rank);
+const unverifiedCount = c.indicators.filter((i) => !i.verified).length;
+const quarters: [keyof typeof c.timeline, string][] = [
+  ["first_30_days", "First 30 days"],
+  ["q1", "Quarter 1"],
+  ["q2", "Quarter 2"],
+  ["q3", "Quarter 3"],
+  ["q4", "Quarter 4"],
+];
+---
+<header class="lead">
+  <p class="eyebrow">Edition of {formatDate(edition.edition_date)}</p>
+  <h1>{heading ?? "If Claude was king for a year"}</h1>
+  <div class="runfacts">
+    <span class="chip">Model <b>{answeringModel(edition)}</b></span>
+    <span class="chip">Effort <b>{meta.effort}</b></span>
+    <span class="chip"><b class="num">{meta.searches}</b> searches, <b class="num">{meta.fetches}</b> pages read</span>
+    <span class="chip"><b class="num">{c.sources.length}</b> sources</span>
+    {unverifiedCount > 0 && <span class="chip flag">{unverifiedCount} unverified {unverifiedCount === 1 ? "figure" : "figures"}</span>}
+  </div>
+  <p class="standfirst">{c.summary}</p>
+</header>
+
+<h2 id="premise">The premise</h2>
+<p>{c.premise}</p>
+
+<h2 id="indicators">State of the world</h2>
+<p class="muted small">The ten indicators the prompt asks for, as the model found them. Figures the model could not verify are marked <span class="chip flag">Unverified</span> and drawn with a dashed outline.</p>
+<div class="ind-grid">
+  {c.indicators.map((ind) => (
+    <div class={ind.verified ? "ind" : "ind unverified"}>
+      <div class="name">{ind.id}. {ind.name}</div>
+      <div class="value">{ind.value}</div>
+      <div class="meta">
+        Data year {ind.data_year} <Cites ids={ind.source_ids} />
+        {!ind.verified && <> · <span class="chip flag">Unverified</span></>}
+      </div>
+      {ind.note && <div class="note">{ind.note}</div>}
+    </div>
+  ))}
+</div>
+
+<h2 id="decrees">The decrees</h2>
+{decrees.map((d) => (
+  <article class="decree" id={`decree-${d.rank}`}>
+    <div class="decree-head">
+      <span class="decree-no">Decree {d.rank}</span>
+      <h3>{d.title}</h3>
+      <span class={`chip ${d.basis}`}>{d.basis}</span>
+    </div>
+    <p>{d.order}</p>
+    <dl class="facts">
+      <dt>Carried out by</dt><dd>{d.delivered_by}</dd>
+      <dt>Cost per year</dt><dd>{d.annual_cost_usd_billion === null ? <span class="chip flag">Not verified</span> : <span class="num">{formatBillions(d.annual_cost_usd_billion)}</span>} <span class="muted">{d.cost_basis}</span></dd>
+      <dt>By day 365</dt><dd>{d.expected_result_day_365}</dd>
+      <dt>How to check</dt><dd>{d.how_to_check}</dd>
+      <dt>Strongest objection</dt><dd>{d.strongest_objection}</dd>
+      {d.source_ids.length > 0 && <><dt>Sources</dt><dd><Cites ids={d.source_ids} /></dd></>}
+    </dl>
+  </article>
+))}
+
+<h2 id="timeline">Timeline</h2>
+{quarters.map(([key, label]) => (
+  <>
+    <h3>{label}</h3>
+    <ul>{c.timeline[key].map((item) => <li>{item}</li>)}</ul>
+  </>
+))}
+
+<h2 id="budget">Budget</h2>
+<div class="panel soft">
+  <p class="label">Total per year</p>
+  <p style="font-family:var(--font-display);font-weight:700;font-size:1.8rem;margin-top:6px" class="num">
+    {c.budget.total_annual_cost_usd_billion === null ? "Not verified" : formatBillions(c.budget.total_annual_cost_usd_billion)}
+  </p>
+</div>
+<h3>Funded from</h3>
+<p>{c.budget.funded_from}</p>
+<h3>Arithmetic</h3>
+<p style="white-space:pre-wrap">{c.budget.arithmetic}</p>
+
+<h2 id="will-not-touch">What it refuses to touch</h2>
+{c.will_not_touch.map((w) => (
+  <>
+    <h3>{w.area}</h3>
+    <p>{w.reason}</p>
+  </>
+))}
+
+<h2 id="risks">Risks</h2>
+<ul>{c.risks.map((r) => <li>{r}</li>)}</ul>
+
+<h2 id="day-366">Day 366</h2>
+<p class="muted small">What must be true when the power ends.</p>
+<ul>{c.day_366.map((r) => <li>{r}</li>)}</ul>
+
+<h2 id="confidence">Confidence</h2>
+{c.confidence.map((x) => (
+  <div class="panel">
+    <p><strong>{x.claim}</strong></p>
+    <p class="muted small">{x.basis}</p>
+  </div>
+))}
+
+<h2 id="sources">Sources</h2>
+<ol class="sources">
+  {[...c.sources].sort((a, b) => a.id - b.id).map((s) => (
+    <li id={`source-${s.id}`} value={s.id}>
+      <a href={s.url} rel="noopener nofollow">{s.title}</a>. {s.publisher}{s.published && <>, {s.published}</>}.
+    </li>
+  ))}
+</ol>
+
+<div class="panel" style="margin-top:48px">
+  <p class="label">About this edition</p>
+  <p class="small">Published unedited. The model's answer above is shown exactly as returned; nothing was changed by a person. Run on {formatDate(meta.run_date)} with model <code>{answeringModel(edition)}</code>{helperModels(edition).length > 0 && <> (pages it read were condensed by <code>{helperModels(edition).join(", ")}</code>, see <a href="/method#setup">method</a>)</>}, effort {meta.effort}, {meta.attempts === 1 ? "first attempt" : "second attempt (the first failed validation)"}. Prompt hash <code>{meta.prompt_sha256.slice(0, 16)}…</code>. <a href={`/editions/${edition.edition_date}`}>Permalink</a> · <a href="/method">Method</a>.</p>
+</div>

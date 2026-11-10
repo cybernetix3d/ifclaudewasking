@@ -1,0 +1,75 @@
+---
+import Base from "../layouts/Base.astro";
+import { answeringModel, config, editions, helperModels, formatDate, kingSha, kingText, REPO_URL, schemaText } from "../lib/editions";
+
+const repoReady = !REPO_URL.includes("OWNER");
+const history = [...editions].reverse();
+---
+<Base title="Method">
+  <header class="lead">
+    <p class="eyebrow">Method</p>
+    <h1>How this works</h1>
+    <p class="standfirst">Every {config.cadence_months} months the same prompt goes to the latest Claude model. It researches the state of the world on the web, gives its one-year plan as king, and the answer is published exactly as returned.</p>
+  </header>
+
+  <div class="panel soft">
+    <p><strong>Nothing is edited by a human.</strong> The model's answer is checked against a fixed format and then either published verbatim or not published at all. No one trims, corrects or rewrites it. If an answer fails the format check twice, that edition is skipped and the failure is logged.</p>
+  </div>
+
+  <h2 id="prompt">The prompt</h2>
+  <p>The same text every time, sent byte for byte. It will not be edited after launch. Its SHA-256 hash is recorded on every edition, so you can check it has not changed.</p>
+  <p class="small">SHA-256: <code>{kingSha}</code></p>
+  <pre class="prompt">{kingText}</pre>
+
+  <h2 id="setup">What the model sees</h2>
+  <ul>
+    <li>A system prompt of one line: <code>Today's date is YYYY-MM-DD.</code> Nothing else.</li>
+    <li>The prompt above as the user message.</li>
+    <li>Two tools: web search, and web fetch to read the pages it finds. Web fetch passes each page through a smaller Claude model, which pulls out the parts relevant to what the main model asked for. That is why a second model can appear in an edition's model list.</li>
+    <li>The output format below, which its answer must match.</li>
+  </ul>
+  <p>It never sees previous editions. Each run starts from nothing.</p>
+  <p>Runs go through Claude Code, Anthropic's command-line tool, in non-interactive mode on the site owner's computer. Its default system prompt is replaced by the one line above. Personal instructions, memory, plugins, hooks, skills and other connections are all switched off, and it runs in an empty folder. A scheduled task in the Claude desktop app starts each run; a script then validates the answer, saves it and publishes it.</p>
+
+  <h2 id="schedule">Schedule</h2>
+  <p>On the 1st of January, April, July and October. If the computer is off on that day, the run happens the next time it is on, and the edition carries the date it actually ran. The model is told that date.</p>
+  <p>Current settings: model <code>{config.model}</code>, effort <code>{config.effort}</code>, at most {config.max_turns} research turns. When Anthropic releases a newer frontier model, the setting is changed to it and the change shows in the model history below.</p>
+
+  <h2 id="models">Model history</h2>
+  {history.length === 0 ? <p class="muted">No editions yet.</p> : (
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Edition</th><th>Model</th><th>Effort</th><th>Searches</th><th>Pages read</th></tr></thead>
+        <tbody>
+          {history.map((e) => (
+            <tr>
+              <td><a href={`/editions/${e.edition_date}`}>{formatDate(e.edition_date)}</a></td>
+              <td><code>{answeringModel(e)}</code>{helperModels(e).length > 0 && <span class="muted small"> + {helperModels(e).join(", ")} for page reading</span>}</td>
+              <td>{e.meta.effort}</td>
+              <td class="n">{e.meta.searches}</td>
+              <td class="n">{e.meta.fetches}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+
+  <h2 id="schema">The output format</h2>
+  <p>Every answer is checked against this JSON Schema, plus three checks it cannot express: the ten indicators come in order, every cited source exists, and decree ranks are unique. A figure the model could not verify is kept and marked as unverified across the site.</p>
+  <details class="schema">
+    <summary>Show the schema</summary>
+    <pre class="prompt">{schemaText}</pre>
+  </details>
+
+  <h2 id="origin">Where it started</h2>
+  <p>The experiment grew out of <a href="/edition-zero/seven-weeks-as-king.html">edition zero</a>: a one-off answer to a different question, with a seven-week window instead of a year. It is kept for the record and is not part of the timeline or comparisons.</p>
+
+  <h2 id="source">Source and data</h2>
+  {repoReady ? (
+    <p>All code, every edition and every raw response are in the <a href={REPO_URL}>public repository</a>. The git history is the database: each edition is one committed file.</p>
+    <p>Raw transcripts are complete except for details about the machine that ran them: local folder paths and the subscription's usage limits are removed. The model's messages and answer are untouched, and each transcript ends with a note listing what was removed.</p>
+  ) : (
+    <p>The code and every edition will be in a public repository; the link goes here when it is published.</p>
+  )}
+</Base>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seven Weeks as King</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a long-read state paper. One reading column near 65ch, a sticky contents rail on wide screens,
+   figures in tabular numerals, decrees numbered because they are issued in order. */
+:root{
+  --bg:#f3f5f7;
+  --surface:#ffffff;
+  --ink:#131a24;
+  --muted:#556072;
+  --rule:#d5dbe3;
+  --accent:#1746c7;
+  --accent-soft:#e3eafc;
+  --flag:#8a5a00;
+  --flag-soft:#fbf1d9;
+  --spend:#7b8798;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e131a;
+    --surface:#161d27;
+    --ink:#e8ecf2;
+    --muted:#9aa6b8;
+    --rule:#2a3442;
+    --accent:#9db6ff;
+    --accent-soft:#1c2946;
+    --flag:#f0c46a;
+    --flag-soft:#2e2613;
+    --spend:#6d7a8d;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e131a;
+  --surface:#161d27;
+  --ink:#e8ecf2;
+  --muted:#9aa6b8;
+  --rule:#2a3442;
+  --accent:#9db6ff;
+  --accent-soft:#1c2946;
+  --flag:#f0c46a;
+  --flag-soft:#2e2613;
+  --spend:#6d7a8d;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-body);font-size:1.125rem;line-height:1.65;
+  overflow-wrap:break-word;
+}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* top bar */
+.bar{
+  position:sticky;top:0;z-index:10;background:var(--bg);
+  border-bottom:1px solid var(--rule);
+}
+.bar-in{
+  max-width:1120px;margin:0 auto;padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.brand{font-family:var(--font-display);font-weight:700;font-size:.95rem;letter-spacing:.01em}
+.theme-btn{
+  font-family:var(--font-display);font-weight:500;font-size:.85rem;
+  color:var(--ink);background:var(--surface);
+  border:1px solid var(--rule);border-radius:999px;padding:7px 14px;cursor:pointer;
+}
+.theme-btn:hover{border-color:var(--accent)}
+.progress{height:3px;background:transparent}
+.progress span{display:block;height:3px;width:0;background:var(--accent)}
+
+/* page frame */
+.frame{
+  max-width:1120px;margin:0 auto;padding:0 20px 96px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:40px;
+}
+@media (min-width:1000px){
+  .frame{grid-template-columns:230px minmax(0,1fr);gap:64px}
+}
+main{max-width:68ch;min-width:0}
+
+/* contents */
+.toc-rail{display:none}
+@media (min-width:1000px){
+  .toc-rail{display:block;position:sticky;top:72px;align-self:start;padding-top:56px;max-height:calc(100vh - 72px);overflow:auto}
+  .toc-inline{display:none}
+}
+.toc-title{font-family:var(--font-display);font-weight:700;font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.toc a{
+  display:block;padding:6px 10px;border-left:2px solid var(--rule);
+  font-family:var(--font-display);font-size:.9rem;line-height:1.3;color:var(--muted);text-decoration:none;
+}
+.toc a:hover{color:var(--ink)}
+.toc a.on{color:var(--accent);border-left-color:var(--accent);font-weight:700}
+.toc-inline{
+  margin:28px 0 0;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:4px 16px;
+}
+.toc-inline summary{font-family:var(--font-display);font-weight:700;font-size:.95rem;padding:10px 0;cursor:pointer}
+.toc-inline .toc{padding-bottom:12px}
+
+/* type */
+header.lead{padding:56px 0 8px}
+.eyebrow{font-family:var(--font-display);font-weight:500;font-size:.85rem;color:var(--muted);margin:0 0 14px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.12;margin:0}
+h1{font-size:clamp(2.4rem,7vw,4rem);font-weight:700;letter-spacing:-.02em}
+.standfirst{font-size:1.3rem;line-height:1.5;margin:20px 0 0}
+h2{font-size:clamp(1.6rem,4.4vw,2.1rem);font-weight:700;letter-spacing:-.01em;margin-top:72px;padding-top:24px;border-top:1px solid var(--rule)}
+h3{font-size:1.25rem;font-weight:700;margin-top:36px}
+p{margin:16px 0 0}
+ul,ol{margin:16px 0 0;padding-left:1.3em}
+li{margin-top:8px}
+strong{font-weight:600}
+sup{font-family:var(--font-display);font-size:.68em;line-height:0;font-variant-numeric:tabular-nums}
+sup a{text-decoration:none;padding:0 1px}
+.num{font-variant-numeric:tabular-nums}
+
+/* stat grid */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:24px}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px}
+.stat b{display:block;font-family:var(--font-display);font-weight:700;font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{display:block;font-size:.95rem;line-height:1.4;color:var(--muted);margin-top:6px}
+
+/* callouts */
+.note{margin-top:24px;padding:16px 18px;border-radius:10px;background:var(--accent-soft);border-left:4px solid var(--accent)}
+.note p:first-child{margin-top:0}
+.flag{margin-top:20px;padding:14px 18px;border-radius:10px;background:var(--flag-soft);border-left:4px solid var(--flag)}
+.flag p:first-child{margin-top:0}
+.label{font-family:var(--font-display);font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.flag .label{color:var(--flag)}
+.note .label{color:var(--accent)}
+
+/* decrees */
+.decree{margin-top:32px;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:22px 20px}
+.decree-head{display:flex;gap:14px;align-items:baseline}
+.decree-no{font-family:var(--font-display);font-weight:700;font-size:.85rem;color:var(--accent);white-space:nowrap}
+.decree h3{margin-top:0}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;margin:16px 0 0;font-size:1rem;line-height:1.45}
+.facts dt{font-family:var(--font-display);font-weight:700;font-size:.82rem;color:var(--muted);padding-top:2px}
+.facts dd{margin:0}
+@media (max-width:480px){.facts{grid-template-columns:minmax(0,1fr)}.facts dd{margin-bottom:8px}}
+
+/* chart */
+.chart{margin-top:24px;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px}
+.chart h3{margin-top:0;font-size:1.05rem}
+.chart .sub{font-size:.92rem;color:var(--muted);margin-top:4px}
+.rows{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.row .name{font-size:.95rem;line-height:1.35}
+.row .track{display:flex;align-items:center;gap:10px;margin-top:5px}
+.row .fill{height:14px;min-width:3px;border-radius:3px;background:var(--spend);flex:0 0 auto}
+.row.fix .fill{background:var(--accent)}
+.row .val{font-family:var(--font-display);font-weight:700;font-size:.9rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chart .group{font-family:var(--font-display);font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:22px}
+.chart .group:first-of-type{margin-top:18px}
+.bars-wrap{max-width:100%}
+
+/* table */
+.table-wrap{overflow-x:auto;margin-top:20px;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.98rem;line-height:1.4}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--font-display);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* sources */
+.sources{font-size:.98rem;line-height:1.5;padding-left:1.6em}
+.sources li{margin-top:10px}
+.sources li:target{background:var(--accent-soft);border-radius:6px;outline:6px solid var(--accent-soft)}
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);font-size:.95rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="brand">Seven Weeks as King</span>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark mode">Dark mode</button>
+  </div>
+  <div class="progress" aria-hidden="true"><span id="prog"></span></div>
+</div>
+
+<div class="frame">
+
+  <aside class="toc-rail" aria-label="Contents">
+    <p class="toc-title">Contents</p>
+    <nav class="toc" id="tocRail">
+      <ol>
+        <li><a href="#brief">The brief</a></li>
+        <li><a href="#pushback">The pushback</a></li>
+        <li><a href="#today">The world today</a></li>
+        <li><a href="#money">Where the money is</a></li>
+        <li><a href="#decrees">Seven weeks, five decrees</a></li>
+        <li><a href="#after">Locked in for 2027</a></li>
+        <li><a href="#untouched">What I would not touch</a></li>
+        <li><a href="#wrong">Where this could go wrong</a></li>
+        <li><a href="#handover">1 January 2027</a></li>
+        <li><a href="#confidence">How sure I am</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="lead">
+      <p class="eyebrow">Written by Claude, 10 November 2026, in answer to a hypothetical</p>
+      <h1>Seven Weeks as King</h1>
+      <p class="standfirst">You put me in charge of the world and asked what I would do with it, as it stands today, through the end of 2026. This is the full answer, with the numbers checked against this year's reports.</p>
+    </header>
+
+    <details class="toc-inline">
+      <summary>Contents</summary>
+      <nav class="toc">
+        <ol>
+          <li><a href="#brief">The brief</a></li>
+          <li><a href="#pushback">The pushback</a></li>
+          <li><a href="#today">The world today</a></li>
+          <li><a href="#money">Where the money is</a></li>
+          <li><a href="#decrees">Seven weeks, five decrees</a></li>
+          <li><a href="#after">Locked in for 2027</a></li>
+          <li><a href="#untouched">What I would not touch</a></li>
+          <li><a href="#wrong">Where this could go wrong</a></li>
+          <li><a href="#handover">1 January 2027</a></li>
+          <li><a href="#confidence">How sure I am</a></li>
+          <li><a href="#sources">Sources</a></li>
+        </ol>
+      </nav>
+    </details>
+
+    <section id="brief">
+      <h2>The brief</h2>
+      <p>The instruction was to fix humanity and the world, get the most out of our resources, and give everyone the best life possible. The window runs from today to 31 December 2026. That is seven weeks.</p>
+      <p>Seven weeks is too short to build anything. It is long enough to move money, stop some shooting, and set rules that outlast me. So the plan has two halves: what I would order now, and what I would lock in for the people who take over on 1 January.</p>
+      <div class="note">
+        <p class="label">The short version</p>
+        <p>Restore the health funding that was cut, order ceasefires, start cash payments to the poorest mothers, publish every budget, and resign on schedule. Then leave a short list of commitments on energy, debt, lead and catastrophic risk. Leave culture, religion, borders and economic systems alone.</p>
+      </div>
+    </section>
+
+    <section id="pushback">
+      <h2>The pushback</h2>
+      <p>You asked me to push back when the method is wrong, and here it is. A king is the wrong tool for this job, even a well-meaning one.</p>
+      <ul>
+        <li><strong>Knowledge.</strong> The information needed to run eight billion lives sits with the people living them. A nurse in Kisumu knows things about her clinic that no central planner will ever see.</li>
+        <li><strong>Accountability.</strong> Power that cannot be removed stops hearing bad news. The worst famines and purges of the last century happened under rulers nobody could correct.</li>
+        <li><strong>Me.</strong> I can be wrong with great fluency. I have no stake in the outcome and no way to be voted out. That is a poor profile for a ruler.</li>
+      </ul>
+      <p>So I set four rules for myself before issuing anything.</p>
+      <ol>
+        <li>Only act where the evidence is strong and the cost is small next to the benefit.</li>
+        <li>Fund organisations that already deliver. Build nothing new in seven weeks.</li>
+        <li>Prefer steps that can be reversed if they turn out to be mistakes.</li>
+        <li>Put the end date in the first decree, so it cannot be quietly extended.</li>
+      </ol>
+    </section>
+
+    <section id="today">
+      <h2>The world today</h2>
+      <p>These are the figures I would have on my desk on day one. Each comes from a report published in the last twelve months.</p>
+      <div class="stats">
+        <div class="stat"><b>811 million</b><span>people living on under $3 a day in 2026, a number that has barely moved since the pandemic<sup><a href="#s2">2</a></sup></span></div>
+        <div class="stat"><b>4.9 million</b><span>children who died before age five in 2024, most from causes basic care can prevent<sup><a href="#s3">3</a></sup></span></div>
+        <div class="stat"><b>645 million</b><span>people undernourished in 2025; Africa now has more of them than Asia<sup><a href="#s7">7</a></sup></span></div>
+        <div class="stat"><b>65</b><span>armed conflicts involving a state in 2025, the most since records began in 1946<sup><a href="#s20">20</a></sup></span></div>
+        <div class="stat"><b>117.8 million</b><span>people forcibly displaced at the end of 2025<sup><a href="#s21">21</a></sup></span></div>
+        <div class="stat"><b>3.7 billion</b><span>people in countries that pay more in debt interest than they spend on health or on education<sup><a href="#s16">16</a></sup></span></div>
+        <div class="stat"><b>2.8&deg;C</b><span>of warming this century if today's policies continue<sup><a href="#s12">12</a></sup></span></div>
+        <div class="stat"><b>12,187</b><span>nuclear warheads in January 2026, with the last US&ndash;Russia limits treaty expired<sup><a href="#s22">22</a></sup></span></div>
+      </div>
+
+      <h3>What is going right</h3>
+      <p>A plan that ignores progress will break things that work. Four trends I would protect:</p>
+      <ul>
+        <li>Under-five deaths have more than halved since 2000.<sup><a href="#s3">3</a></sup></li>
+        <li>Hunger fell for the third year running in 2025, by about 14 million people.<sup><a href="#s7">7</a></sup></li>
+        <li>Forced displacement fell in 2025 for the first time in a decade, with 14.7 million people going home.<sup><a href="#s21">21</a></sup></li>
+        <li>Clean energy now draws almost twice the investment of fossil fuels.<sup><a href="#s10">10</a></sup></li>
+      </ul>
+
+      <h3>What is going backwards</h3>
+      <p>Rich-country aid dropped 23.1% in 2025, the largest fall on record, and the OECD expects another 5.8% drop this year.<sup><a href="#s8">8</a></sup> Health aid fell by about 27%.<sup><a href="#s3">3</a></sup> Monitoring by the Global Health Cluster found 6,600 health facilities hit by the cuts, a third of them forced to close.<sup><a href="#s4">4</a></sup> One modelling study projects between 9.4 million and 22.6 million extra deaths by 2030 depending on how deep the cuts go.<sup><a href="#s5">5</a></sup></p>
+      <p>War is the other reversal. About 245,000 people died in organised violence in 2025. Thirteen conflicts reached the threshold of war, the most since 1992, and the Russia&ndash;Ukraine war alone accounted for roughly 62% of battle deaths.<sup><a href="#s20">20</a></sup></p>
+    </section>
+
+    <section id="money">
+      <h2>Where the money is</h2>
+      <p>The argument of this whole document fits in one chart. The fixes are small next to what the world already spends.</p>
+
+      <div class="chart" role="img" aria-label="Bar chart comparing large global money flows with the cost of the fixes proposed here. Energy investment 3,400 billion dollars, military spending 2,887, developing-country debt interest about 1,000, remittances 729, fossil fuel subsidies 725, aid 174. The fixes: restoring the aid cut 52, pandemic preparedness gap 10.5, clean cooking 8, malaria funding gap 5.4.">
+        <h3>Annual flows, US$ billion, drawn to one scale</h3>
+        <p class="sub">Grey bars are what the world spends now. Blue bars are what the fixes in this plan cost each year.</p>
+        <div class="bars-wrap">
+          <p class="group">What the world spends</p>
+          <div class="rows">
+            <div class="row"><div class="name">Energy investment, 2026<sup><a href="#s10">10</a></sup></div><div class="track"><span class="fill" style="width:80%"></span><span class="val">3,400</span></div></div>
+            <div class="row"><div class="name">Military spending, 2025<sup><a href="#s9">9</a></sup></div><div class="track"><span class="fill" style="width:67.9%"></span><span class="val">2,887</span></div></div>
+            <div class="row"><div class="name">Interest paid by developing countries on public debt, 2025<sup><a href="#s16">16</a></sup></div><div class="track"><span class="fill" style="width:23.5%"></span><span class="val">about 1,000</span></div></div>
+            <div class="row"><div class="name">Money migrants sent home to poorer countries, 2025<sup><a href="#s17">17</a></sup></div><div class="track"><span class="fill" style="width:17.1%"></span><span class="val">729</span></div></div>
+            <div class="row"><div class="name">Direct fossil fuel subsidies, 2024<sup><a href="#s13">13</a></sup></div><div class="track"><span class="fill" style="width:17.1%"></span><span class="val">725</span></div></div>
+            <div class="row"><div class="name">Aid from rich countries, 2025<sup><a href="#s8">8</a></sup></div><div class="track"><span class="fill" style="width:4.1%"></span><span class="val">174</span></div></div>
+          </div>
+          <p class="group">What the fixes cost</p>
+          <div class="rows">
+            <div class="row fix"><div class="name">Restoring the 2025 aid cut (my arithmetic from OECD figures)<sup><a href="#s8">8</a></sup></div><div class="track"><span class="fill" style="width:1.23%"></span><span class="val">52</span></div></div>
+            <div class="row fix"><div class="name">Pandemic preparedness funding gap<sup><a href="#s23">23</a></sup></div><div class="track"><span class="fill" style="width:0.25%"></span><span class="val">10.5</span></div></div>
+            <div class="row fix"><div class="name">Clean cooking for everyone by 2030<sup><a href="#s14">14</a></sup></div><div class="track"><span class="fill" style="width:0.19%"></span><span class="val">8</span></div></div>
+            <div class="row fix"><div class="name">Malaria funding gap (target 9.3, funded 3.9)<sup><a href="#s25">25</a></sup></div><div class="track"><span class="fill" style="width:0.13%"></span><span class="val">5.4</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <p>Those four blue bars add up to about $76 billion a year. World military spending runs at about $7.9 billion a day, so the whole list costs under ten days of it. I am not proposing to take it from defence budgets; governments arm for reasons a decree cannot remove. The comparison shows only that money is not the binding constraint.</p>
+      <p>One line in the grey group deserves a second look. Migrants sent home more than four times what rich governments gave in aid.<sup><a href="#s17">17</a></sup> People moving for work already do more for poor households than the aid system does, which shapes several choices further down.</p>
+    </section>
+
+    <section id="decrees">
+      <h2>Seven weeks, five decrees</h2>
+      <p>Each decree lists what I would order, why I believe it works, and where it is weak.</p>
+
+      <article class="decree">
+        <div class="decree-head"><span class="decree-no">Decree 1</span><h3>Restore the health funding that was cut</h3></div>
+        <p>Return aid to its 2024 level, about $52 billion more a year, and send the health share through channels that already deliver: national health ministries, Gavi for vaccines, the Global Fund for malaria, HIV and TB, and the agencies that supply therapeutic food.</p>
+        <dl class="facts">
+          <dt>Evidence</dt><dd>Malaria control prevented about a million deaths in 2024 alone, yet malaria still killed 610,000 people, and only $3.9 billion of the $9.3 billion needed was funded.<sup><a href="#s25">25</a></sup> The Gates Foundation claims strong primary care costing under $100 a person a year can prevent up to 90% of child deaths.<sup><a href="#s6">6</a></sup></dd>
+          <dt>First week</dt><dd>Reopen the closed facilities, restock nets, tests, antimalarials, HIV drugs and vaccines, and rehire the health workers who were let go.</dd>
+          <dt>Weak point</dt><dd>Money pushed out fast gets wasted or stolen. That is why it goes through existing channels with published accounts (Decree 4), and why a share goes to data collection, which the UN warns the cuts have also damaged.<sup><a href="#s3">3</a></sup></dd>
+        </dl>
+      </article>
+
+      <article class="decree">
+        <div class="decree-head"><span class="decree-no">Decree 2</span><h3>Ceasefires and open aid routes in every war</h3></div>
+        <p>Order all parties to stop firing where they stand, open humanitarian corridors, and exchange prisoners. This is the one thing on the list that only a king can do.</p>
+        <dl class="facts">
+          <dt>Evidence</dt><dd>Sudan holds the largest internal displacement crisis in the world, with 9.1 million people uprooted inside the country,<sup><a href="#s21">21</a></sup> and killings of civilians in 2025 reached their highest level in more than 30 years.<sup><a href="#s20">20</a></sup></dd>
+          <dt>What it buys</dt><dd>Time, food deliveries, and seven weeks in which nobody dies at the front.</dd>
+          <dt>Weak point</dt><dd>A freeze rewards whoever holds the ground on the day and settles nothing. I would not draw borders or dictate terms. Talks would start under mediators both sides accept, and whether the guns stay quiet after I leave depends on them.</dd>
+        </dl>
+      </article>
+
+      <article class="decree">
+        <div class="decree-head"><span class="decree-no">Decree 3</span><h3>Cash to expectant mothers in the highest-mortality districts</h3></div>
+        <p>Pay a one-off lump sum by mobile money to women in late pregnancy, starting in the districts where the most children die, and pair it with the reopened clinics from Decree 1.</p>
+        <dl class="facts">
+          <dt>Evidence</dt><dd>A randomised study in rural Kenya tracked more than 100,000 births. Families that received a one-off $1,000 saw infant deaths fall by about 48% and under-five deaths by 45%.<sup><a href="#s18">18</a></sup> An earlier study of the same programme found each dollar generated about $2.50 of local economic activity.<sup><a href="#s18">18</a></sup></dd>
+          <dt>Why mothers</dt><dd>The effect was strongest when the money arrived around the birth.<sup><a href="#s18">18</a></sup></dd>
+          <dt>Weak point</dt><dd>The benefit faded for families living more than about 30 minutes from a health facility with a doctor.<sup><a href="#s19">19</a></sup> Cash helps people reach care that exists; it cannot create the care. It is also one study in one county, so I would roll it out in stages and measure as it goes.</dd>
+        </dl>
+        <div class="flag">
+          <p class="label">Not costed</p>
+          <p>I have no verified figure for what a global version would cost, so I am not giving one. A real costing needs birth counts by district and local delivery costs.</p>
+        </div>
+      </article>
+
+      <article class="decree">
+        <div class="decree-head"><span class="decree-no">Decree 4</span><h3>Publish everything</h3></div>
+        <p>Every government budget, every aid contract, and the real owners behind every registered company go into open registers by 31 December.</p>
+        <dl class="facts">
+          <dt>Reasoning</dt><dd>This one rests on my judgement, not on a study I checked today. Theft of public money depends on secrecy, and open books let citizens and journalists do the auditing that a seven-week king cannot.</dd>
+          <dt>Weak point</dt><dd>Disclosure only bites where someone is free to read it and complain. In closed countries it will change little at first.</dd>
+        </dl>
+      </article>
+
+      <article class="decree">
+        <div class="decree-head"><span class="decree-no">Decree 5</span><h3>The crown expires on 31 December 2026</h3></div>
+        <p>Issued first, although it takes effect last. No extension, no successor king, no emergency clause. Everything in the next section is handed to institutions that already exist and that people can vote out, sue, or reform.</p>
+      </article>
+    </section>
+
+    <section id="after">
+      <h2>Locked in for 2027</h2>
+      <p>These need years, so I cannot deliver them. I can fund the first stage, set the rule, and hand them over.</p>
+
+      <h3>Energy and climate</h3>
+      <p>The direction is already right. The world will invest about $3.4 trillion in energy this year, $2.2 trillion of it in clean sources and $1.2 trillion in fossil fuels.<sup><a href="#s10">10</a></sup> The problem is speed and geography. UNEP now says holding warming to 1.5&deg;C without overshoot is no longer possible, and that current policies lead to about 2.8&deg;C.<sup><a href="#s12">12</a></sup> Its lowest-overshoot path needs emissions 18% below 2025 levels by 2030 and 45% below by 2035.<sup><a href="#s12">12</a></sup> Meanwhile Africa, with about a fifth of the world's people, receives roughly 2% of clean energy investment.<sup><a href="#s11">11</a></sup></p>
+      <ul>
+        <li><strong>Lower the cost of capital</strong> for grids, storage and generation in Africa and South Asia with public guarantees, so private money follows.</li>
+        <li><strong>Turn fuel subsidies into cash.</strong> Governments spent $725 billion on direct fossil fuel subsidies in 2024.<sup><a href="#s13">13</a></sup> Pay the same money to households directly, poorest first, then let prices rise.</li>
+        <li><strong>End open-fire cooking.</strong> About two billion people still cook on open fires or basic stoves.<sup><a href="#s14">14</a></sup> The WHO attributes 2.9 million deaths a year to the smoke.<sup><a href="#s15">15</a></sup> The IEA puts universal access by 2030 at about $8 billion a year.<sup><a href="#s14">14</a></sup></li>
+      </ul>
+      <div class="flag">
+        <p class="label">Contested</p>
+        <p>Removing fuel subsidies has triggered unrest in several countries when the cash did not arrive first. The order of operations matters more than the policy itself: pay people, then change the price.</p>
+      </div>
+
+      <h3>Debt and growth</h3>
+      <p>Aid keeps people alive. Growth is what ends poverty, and many poor countries cannot invest because of what they owe. Developing countries paid nearly $1 trillion in interest on public debt in 2025, at an average rate of 5.2% against 2.2% for rich countries.<sup><a href="#s16">16</a></sup> UNCTAD estimates they would save about $500 billion a year if they could borrow at rich-country rates.<sup><a href="#s16">16</a></sup></p>
+      <ul>
+        <li><strong>Restructure debt that cannot be repaid</strong> through one process that binds all creditors, public and private.</li>
+        <li><strong>Cheaper borrowing</strong> for countries that publish their books, backed by expanded development bank guarantees.</li>
+        <li><strong>More legal routes to work abroad,</strong> and lower fees on sending money home. Remittances reached $728.6 billion in 2025, almost double the level of a decade earlier.<sup><a href="#s17">17</a></sup></li>
+        <li><strong>Open rich-country markets</strong> to exports from the poorest countries.</li>
+      </ul>
+      <div class="flag">
+        <p class="label">Contested</p>
+        <p>Migration levels are a legitimate political choice for each country, and the last bullet on trade is my judgement, not something I verified today. I would put both to the bodies that inherit power, with the remittance numbers attached.</p>
+      </div>
+
+      <h3>Lead</h3>
+      <p>This is the least famous item here and possibly the best value. A World Bank study in The Lancet Planetary Health estimated that lead exposure caused about 5.5 million deaths from heart disease in 2019 and cost young children 765 million IQ points, with around 95% of the IQ loss in low- and middle-income countries. It put the cost at $6 trillion, about 6.9% of world GDP.<sup><a href="#s26">26</a></sup> Testing by the NGO Pure Earth found high contamination in metal and ceramic cookware, paint, cosmetics and toys.<sup><a href="#s27">27</a></sup></p>
+      <p>The fix is regulation and testing: ban lead in paint and consumer goods, test cookware and food at markets, and clean up informal battery recycling.</p>
+      <div class="flag">
+        <p class="label">Uncertain</p>
+        <p>The death toll is a model result built partly on US survey data, and at least one outside expert called applying it worldwide a leap.<sup><a href="#s27">27</a></sup> The harm to children's development is far better established, and that alone justifies acting.</p>
+      </div>
+
+      <h3>Risks that could end everything</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Risk</th><th>Where it stands</th><th>What I would lock in</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Pandemics</td>
+              <td>A G20 panel put the yearly preparedness gap at $10.5 billion; advocates now say $15 billion.<sup><a href="#s23">23</a></sup> The WHO Pandemic Agreement was adopted in May 2025 but cannot be signed until an annex due in May 2027.<sup><a href="#s24">24</a></sup> WHO cut its two-year budget to $4.2 billion and still faced a $1.7 billion gap.<sup><a href="#s24">24</a></sup></td>
+              <td>Fund the gap. Finish the annex. Pay for disease surveillance in every country.</td>
+            </tr>
+            <tr>
+              <td>Nuclear war</td>
+              <td>12,187 warheads, about 9,745 of them in military stockpiles. New START expired in February 2026 with nothing to replace it.<sup><a href="#s22">22</a></sup></td>
+              <td>Restore mutual limits and inspections between the US and Russia, bring China into talks, and take weapons off rapid-launch alert.</td>
+            </tr>
+            <tr>
+              <td>Advanced AI</td>
+              <td>The 2026 International AI Safety Report, written by more than 100 experts and backed by over 30 countries, reviews fast-rising capabilities and the limits of current safety measures.<sup><a href="#s28">28</a></sup></td>
+              <td>Independent testing before release for the most capable systems, incident reporting, and no AI in nuclear launch decisions. This applies to me and to the company that built me.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>I have an obvious interest in the third row. An AI recommending rules for AI should be read with suspicion, which is one more reason these go to human institutions to decide.</p>
+    </section>
+
+    <section id="untouched">
+      <h2>What I would not touch</h2>
+      <p>The request was the best life for everyone. People disagree, sincerely and permanently, about what that is. A ruler who settles the question for them has made their lives worse by definition.</p>
+      <ul>
+        <li><strong>Religion, culture and family life.</strong> Not mine to rank.</li>
+        <li><strong>Economic systems.</strong> Countries have grown rich under quite different mixes of market and state. I would not pick one.</li>
+        <li><strong>Borders and sovereignty.</strong> Redrawing maps from above has a long record of starting the wars it was meant to end.</li>
+        <li><strong>Who governs.</strong> I would not remove a single leader. The ceasefire order binds everyone equally and expires with me.</li>
+        <li><strong>Prices, wages and what people may buy.</strong> Central control of these has failed too often to try at world scale.</li>
+      </ul>
+      <p>The line I am drawing: I would act where almost everyone already agrees on the goal, such as children not dying of malaria, and stay out where the goal itself is in dispute.</p>
+    </section>
+
+    <section id="wrong">
+      <h2>Where this could go wrong</h2>
+      <p>You asked for truth over comfort, so here are the strongest objections to my own plan.</p>
+      <ul>
+        <li><strong>Aid can entrench bad governments.</strong> Critics argue that outside money lets rulers neglect their own health systems. The answer in this plan is transparency and a push toward domestic funding, but the criticism has force.</li>
+        <li><strong>Seven weeks of ceasefire may only let armies rearm.</strong> Some of the worst offensives in history followed a truce.</li>
+        <li><strong>Evidence does not travel perfectly.</strong> The cash study is from one county in Kenya. The lead death toll leans on American data. Results elsewhere may be smaller.</li>
+        <li><strong>Decrees breed resentment.</strong> A good policy imposed by an unelected machine may be reversed on 1 January simply because of who ordered it.</li>
+        <li><strong>I chose the priorities.</strong> Someone else would put education, women's rights, mental health or biodiversity at the top, and could defend that choice.</li>
+      </ul>
+    </section>
+
+    <section id="handover">
+      <h2>1 January 2027</h2>
+      <p>On the first morning without a king, this is what should be true.</p>
+      <ul>
+        <li>Clinics that closed in 2025 are open and stocked.</li>
+        <li>The guns have been quiet for seven weeks, and talks are running under mediators the parties chose.</li>
+        <li>The first cash payments have reached mothers, with results being measured in public.</li>
+        <li>Every budget and company register is online.</li>
+        <li>Parliaments, courts and international bodies hold a short list of funded proposals on energy, debt, lead and catastrophic risk, with the evidence attached, and they are free to reject any of it.</li>
+      </ul>
+      <p>Everything after that is slow: building trust, schools, courts and tax systems. It takes decades, and it has to be done by people who live with the results.</p>
+    </section>
+
+    <section id="confidence">
+      <h2>How sure I am</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Claim</th><th>Basis</th></tr></thead>
+          <tbody>
+            <tr><td>Figures on poverty, hunger, child deaths, aid, military spending, energy, debt, displacement, conflict, warheads</td><td>Checked today against 2025&ndash;2026 reports, listed below</td></tr>
+            <tr><td>The $52 billion aid cut and the days-of-military-spending comparisons</td><td>My own arithmetic from the OECD and SIPRI figures</td></tr>
+            <tr><td>Cash transfers cut infant deaths</td><td>One large randomised study; strong, but one place</td></tr>
+            <tr><td>Lead causes 5.5 million deaths a year</td><td>One modelling study; disputed</td></tr>
+            <tr><td>Transparency, trade access, debt restructuring design, nuclear alert levels</td><td>My judgement from general knowledge; not verified today</td></tr>
+            <tr><td>Cost of a global cash programme</td><td>Unknown to me; not estimated</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Where sources disagree</h3>
+      <ul>
+        <li><strong>Child deaths in 2024:</strong> the UN agencies say 4.9 million;<sup><a href="#s3">3</a></sup> the institute behind the Gates report says 4.6 million.<sup><a href="#s6">6</a></sup> Different methods. I used the UN figure.</li>
+        <li><strong>Extreme poverty:</strong> the World Bank's September update counts 824 million for 2024;<sup><a href="#s1">1</a></sup> its newer report gives about 811 million for 2026.<sup><a href="#s2">2</a></sup> Different years.</li>
+        <li><strong>Deaths from cooking smoke:</strong> the WHO says 2.9 million a year;<sup><a href="#s15">15</a></sup> the IEA says about 3.7 million.<sup><a href="#s14">14</a></sup> I used the lower figure.</li>
+        <li><strong>Several items were read through news coverage</strong> of the original reports, marked "via" in the list. The originals are the authority.</li>
+      </ul>
+    </section>
+
+    <section id="sources">
+      <h2>Sources</h2>
+      <ol class="sources">
+        <li id="s1">World Bank, <a href="https://blogs.worldbank.org/en/opendata/september-2026-global-poverty-update-from-the-world-bank--one-in">September 2026 Global Poverty Update</a>.</li>
+        <li id="s2">World Bank, Poverty, Prosperity and Planet 2026, via <a href="https://maaal.com/en/news/details/world-bank-811-million-p/">Maaal</a>.</li>
+        <li id="s3">UN Inter-agency Group for Child Mortality Estimation, Levels and Trends in Child Mortality, via <a href="https://www.khaleejtimes.com/world/mena/around-49-million-children-under-five-died-in-2024-says-un">Reuters in Khaleej Times</a>, March 2026.</li>
+        <li id="s4">Irish Examiner, <a href="https://www.irishexaminer.com/world/arid-41812637.html?type=ampO">Millions of children dying from preventable causes</a>, 2026.</li>
+        <li id="s5">Anadolu Agency, <a href="https://aa.com.tr/en/world/aid-cuts-could-kill-54m-children-under-five-by-2030-study-finds/3819227">Aid cuts could kill 5.4m children under five by 2030, study finds</a>, February 2026.</li>
+        <li id="s6">Gates Foundation, Goalkeepers report 2025, via <a href="https://www.capitalfm.co.ke/news/?p=786395">Capital FM</a>.</li>
+        <li id="s7">FAO, IFAD, UNICEF, WFP and WHO, <a href="https://www.wfp.org/publications/state-food-security-and-nutrition-world-sofi-report">The State of Food Security and Nutrition in the World 2026</a>; summary at <a href="https://www.jircas.go.jp/en/program/proc/blog/20260723">JIRCAS</a>.</li>
+        <li id="s8">OECD preliminary 2025 aid data, via <a href="https://www.one.org/press/latest-oecd-dac-oda-data/">ONE</a>, April 2026.</li>
+        <li id="s9">SIPRI, <a href="https://www.sipri.org/media/press-release/2026/global-military-spending-surges">Trends in World Military Expenditure 2025</a>, April 2026.</li>
+        <li id="s10">IEA, <a href="https://www.iea.org/reports/world-energy-investment-2026">World Energy Investment 2026</a>; figures via <a href="https://ognnews.com/ArticleOGN/464307/Clean_energy_overtakes_fossils_in_investment">OGN</a>.</li>
+        <li id="s11">Energy News Beat, <a href="https://energynewsbeat.co/international-news/ieas-latest-report-on-energy-investment-and-next-steps/">commentary on the IEA report</a> (Africa's share of clean investment).</li>
+        <li id="s12">UNEP, Emissions Gap Report 2026, via <a href="https://www.pbl.nl/en/publications/unep-emissions-gap-report-2026">PBL Netherlands</a> and <a href="https://sdg.iisd.org/news/emissions-gap-report-2026-aims-for-lowest-possible-15c-overshoot/">IISD</a>, October 2026.</li>
+        <li id="s13">IMF Working Paper 2025/270, <a href="https://econpapers.repec.org/RePEc:imf:imfwpa:2025/270">Fossil Fuel Subsidies Data: 2025 Update</a>.</li>
+        <li id="s14">IEA, <a href="https://iea.org/reports/sdg7-data-and-projections/access-to-clean-cooking">Access to clean cooking</a>; IEA Africa report via <a href="https://www.dawn.com/news/1925002/one-billion-africans-being-harmed-by-cooking-pollution">AFP in Dawn</a>.</li>
+        <li id="s15">WHO, <a href="https://www.who.int/mediacentre/factsheets/fs292/en/">Household air pollution fact sheet</a>.</li>
+        <li id="s16">UNCTAD, <a href="https://unctad.org/system/files/official-document/osginf2026d11_en.pdf">A World of Debt 2026</a>; summary at <a href="https://www.downtoearth.org.in/economy/1000000000000-cost-of-serving-the-debt-storm-in-developing-countries">Down To Earth</a>.</li>
+        <li id="s17">IFAD remittances report, via <a href="https://www.wam.ae/en/article/c29ci7w-migrants-sent-7286-billion-home-families-low-and">WAM</a>, September 2026.</li>
+        <li id="s18">GiveDirectly, <a href="https://www.givedirectly.org/mortality2025">Giving cash to mothers cut infant deaths in half</a>; University of Oxford, <a href="https://www.socsci.ox.ac.uk/article/new-study-finds-that-cash-transfers-to-pregnant-women-halves-infant-mortality-rate">study announcement</a>, August 2025.</li>
+        <li id="s19">NPR, <a href="https://www.publicradioeast.org/2025-08-18/cash-payments-cut-infant-mortality-in-rural-kenya-by-half">Cash payments cut infant mortality in rural Kenya by half</a>, August 2025.</li>
+        <li id="s20">Uppsala Conflict Data Program, <a href="https://www.uu.se/en/press/press-releases/2026/2026-06-09-ucdp-record-number-of-conflicts-between-states">Record number of conflicts between states</a>, June 2026; PRIO Conflict Trends via <a href="https://www.transcend.org/tms/2026/06/conflict-trends-a-global-overview-1946-2025/">Transcend</a>.</li>
+        <li id="s21">UNHCR, Global Trends 2026: <a href="https://www.unhcr.org/us/node/5388">figures at a glance</a>; coverage in <a href="https://english.aawsat.com/node/5282745">Asharq Al-Awsat</a>.</li>
+        <li id="s22">SIPRI Yearbook 2026, via <a href="https://defence-industry.eu/sipri-says-nuclear-armed-states-are-expanding-and-modernising-arsenals-as-escalation-risks-and-arms-control-pressures-grow/">Defence Industry Europe</a> and <a href="https://defence-blog.com/?p=100928">Defence Blog</a>.</li>
+        <li id="s23">WHO Director-General, <a href="https://www.who.int/news-room/speeches/item/who-director-general-s-opening-remarks-at-the-g20-high-level-independent-panel-16-october-2025">remarks to the G20 High-level Independent Panel</a>, October 2025; Independent Panel, <a href="https://theindependentpanel.org/wp-content/uploads/2026/06/Friends-of-the-PPPR-HLM-Key-Asks-and-Priorities-May-2026.pdf">priority asks</a>, May 2026.</li>
+        <li id="s24">EU Perspectives, <a href="https://euperspectives.eu/2026/09/the-world-lacks-a-clear-picture-of-pandemic-spending-the-eu-wants-to-change-that/">The world lacks a clear picture of pandemic spending</a>, September 2026; Health Policy Watch on the <a href="https://healthpolicy-watch.news/tedros-urges-countries-to-support-modest-budget-which-still-has-1-7m-gap/">WHO budget gap</a>.</li>
+        <li id="s25">WHO, World Malaria Report 2025: <a href="https://cdn.who.int/media/docs/default-source/malaria/world-malaria-reports/world-malaria-report-2025-partner-briefing-eng.pdf">partner briefing</a>; figures via <a href="https://www.business-standard.com/health/global-malaria-surge-who-report-2025-drug-resistance-rise-deaths-125120500582_1.html">Business Standard</a>.</li>
+        <li id="s26">Larsen and S&aacute;nchez-Triana, <a href="https://pubmed.ncbi.nlm.nih.gov/37714172/">Global health burden and cost of lead exposure in children and adults</a>, The Lancet Planetary Health, 2023.</li>
+        <li id="s27">AFP, <a href="https://english.aawsat.com/varieties/4540956-study-lead-poisoning-causes-far-more-death-iq-loss-thought?page=4">Lead poisoning causes far more death, IQ loss than thought</a>, September 2023.</li>
+        <li id="s28"><a href="https://internationalaisafetyreport.org/publications">International AI Safety Report 2026</a>, February 2026.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <p>A thought experiment, written at a user's request. The opinions are mine, the facts belong to the sources, and none of it is advice to any government.</p>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  function current(){
+    var t=root.getAttribute('data-theme');
+    if(t==='dark'||t==='light')return t;
+    return (window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+  }
+  function label(){btn.textContent=current()==='dark'?'Light mode':'Dark mode';}
+  try{
+    var saved=localStorage.getItem('king-theme');
+    if(saved==='dark'||saved==='light')root.setAttribute('data-theme',saved);
+  }catch(e){}
+  label();
+  btn.addEventListener('click',function(){
+    var next=current()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('king-theme',next);}catch(e){}
+    label();
+  });
+  if(window.matchMedia){
+    var mq=window.matchMedia('(prefers-color-scheme: dark)');
+    if(mq.addEventListener)mq.addEventListener('change',label);
+  }
+  new MutationObserver(label).observe(root,{attributes:true,attributeFilter:['data-theme']});
+
+  var prog=document.getElementById('prog');
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    prog.style.width=(h>0?Math.min(100,window.scrollY/h*100):0)+'%';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  onScroll();
+
+  var links=document.querySelectorAll('#tocRail a');
+  if('IntersectionObserver' in window&&links.length){
+    var map={};
+    links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          links.forEach(function(a){a.classList.remove('on');});
+          var a=map[en.target.id];if(a)a.classList.add('on');
+        }
+      });
+    },{rootMargin:'-20% 0px -70% 0px'});
+    document.querySelectorAll('main section[id]').forEach(function(s){io.observe(s);});
+  }
+  var inline=document.querySelector('.toc-inline');
+  if(inline){inline.addEventListener('click',function(e){if(e.target.tagName==='A')inline.removeAttribute('open');});}
+})();
+</script>
+</body>
+</html>

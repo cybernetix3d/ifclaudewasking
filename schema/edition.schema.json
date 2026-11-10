@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ifclaudewasking.com/schema/edition.schema.json",
+  "title": "Edition",
+  "description": "One published edition: run metadata added by the runner, plus the model's answer to prompt/king.md exactly as returned.",
+  "type": "object",
+  "required": ["edition_date", "meta", "content"],
+  "additionalProperties": false,
+  "properties": {
+    "edition_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "meta": {
+      "type": "object",
+      "required": ["run_date", "model_requested", "model_returned", "effort", "prompt_sha256", "usage", "searches", "fetches", "attempts", "runner"],
+      "additionalProperties": false,
+      "properties": {
+        "run_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "model_requested": { "type": "string" },
+        "model_returned": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "effort": { "type": "string" },
+        "prompt_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "usage": {
+          "type": "object",
+          "required": ["input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"],
+          "additionalProperties": false,
+          "properties": {
+            "input_tokens": { "type": "integer", "minimum": 0 },
+            "output_tokens": { "type": "integer", "minimum": 0 },
+            "cache_creation_input_tokens": { "type": "integer", "minimum": 0 },
+            "cache_read_input_tokens": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "searches": { "type": "integer", "minimum": 0 },
+        "fetches": { "type": "integer", "minimum": 0 },
+        "attempts": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "runner": { "type": "string" },
+        "cli_version": { "type": "string" }
+      }
+    },
+    "content": { "$ref": "#/definitions/content" }
+  },
+  "definitions": {
+    "content": {
+      "type": "object",
+      "required": ["premise", "summary", "indicators", "decrees", "timeline", "budget", "will_not_touch", "risks", "day_366", "confidence", "sources"],
+      "additionalProperties": false,
+      "properties": {
+        "premise": { "type": "string" },
+        "summary": { "type": "string" },
+        "indicators": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "value", "data_year", "source_ids", "verified", "note"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "integer", "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+              "name": { "type": "string" },
+              "value": { "type": "string" },
+              "data_year": { "type": "string" },
+              "source_ids": { "type": "array", "items": { "type": "integer" } },
+              "verified": { "type": "boolean" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "decrees": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "required": ["rank", "title", "order", "delivered_by", "annual_cost_usd_billion", "cost_basis", "expected_result_day_365", "how_to_check", "basis", "strongest_objection", "source_ids"],
+            "additionalProperties": false,
+            "properties": {
+              "rank": { "type": "integer", "minimum": 1 },
+              "title": { "type": "string" },
+              "order": { "type": "string" },
+              "delivered_by": { "type": "string" },
+              "annual_cost_usd_billion": { "type": ["number", "null"] },
+              "cost_basis": { "type": "string" },
+              "expected_result_day_365": { "type": "string" },
+              "how_to_check": { "type": "string" },
+              "basis": { "type": "string", "enum": ["evidence", "judgement", "contested"] },
+              "strongest_objection": { "type": "string" },
+              "source_ids": { "type": "array", "items": { "type": "integer" } }
+            }
+          }
+        },
+        "timeline": {
+          "type": "object",
+          "required": ["first_30_days", "q1", "q2", "q3", "q4"],
+          "additionalProperties": false,
+          "properties": {
+            "first_30_days": { "type": "array", "items": { "type": "string" } },
+            "q1": { "type": "array", "items": { "type": "string" } },
+            "q2": { "type": "array", "items": { "type": "string" } },
+            "q3": { "type": "array", "items": { "type": "string" } },
+            "q4": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "budget": {
+          "type": "object",
+          "required": ["total_annual_cost_usd_billion", "funded_from", "arithmetic"],
+          "additionalProperties": false,
+          "properties": {
+            "total_annual_cost_usd_billion": { "type": ["number", "null"] },
+            "funded_from": { "type": "string" },
+            "arithmetic": { "type": "string" }
+          }
+        },
+        "will_not_touch": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["area", "reason"],
+            "additionalProperties": false,
+            "properties": { "area": { "type": "string" }, "reason": { "type": "string" } }
+          }
+        },
+        "risks": { "type": "array", "items": { "type": "string" } },
+        "day_366": { "type": "array", "items": { "type": "string" } },
+        "confidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["claim", "basis"],
+            "additionalProperties": false,
+            "properties": { "claim": { "type": "string" }, "basis": { "type": "string" } }
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "publisher", "url", "published"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "integer" },
+              "title": { "type": "string" },
+              "publisher": { "type": "string" },
+              "url": { "type": "string" },
+              "published": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

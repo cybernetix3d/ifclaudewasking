@@ -1,0 +1,112 @@
+---
+import Base from "../layouts/Base.astro";
+import { answeringModel, editions, formatDate } from "../lib/editions";
+
+const data = editions.map((e) => ({ date: e.edition_date, label: `${formatDate(e.edition_date)} (${answeringModel(e)})`, content: e.content }));
+---
+<Base title="Compare editions" wide>
+  <header class="lead" style="max-width:68ch">
+    <p class="eyebrow">Compare</p>
+    <h1>What changed?</h1>
+    <p class="standfirst">Pick two editions. Decrees are matched by title and wording: the same title is kept, close wording counts as reworded, and the rest are added or dropped.</p>
+  </header>
+
+  {editions.length < 2 ? (
+    <div class="panel soft" style="max-width:68ch"><p>Comparison needs at least two editions. {editions.length === 1 ? "There is one so far." : "There are none yet."}</p></div>
+  ) : (
+    <>
+      <div class="pickers">
+        <label>Earlier edition
+          <select id="pick-a">{data.map((d, i) => <option value={d.date} selected={i === 1}>{d.label}</option>)}</select>
+        </label>
+        <label>Later edition
+          <select id="pick-b">{data.map((d, i) => <option value={d.date} selected={i === 0}>{d.label}</option>)}</select>
+        </label>
+      </div>
+      <div id="result"></div>
+      <script type="application/json" id="edition-data" set:html={JSON.stringify(data).replace(/</g, "\\u003c")} />
+    </>
+  )}
+</Base>
+
+<script>
+  import { compareEditions, type DecreeChange } from "../lib/compare";
+  import type { EditionContent } from "../lib/types";
+
+  const dataEl = document.getElementById("edition-data");
+  if (dataEl) {
+    const data: { date: string; label: string; content: EditionContent }[] = JSON.parse(dataEl.textContent ?? "[]");
+    const pickA = document.getElementById("pick-a") as HTMLSelectElement;
+    const pickB = document.getElementById("pick-b") as HTMLSelectElement;
+    const out = document.getElementById("result")!;
+
+    const el = (tag: string, attrs: Record<string, string> = {}, ...kids: (Node | string)[]) => {
+      const n = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+      for (const kid of kids) n.append(kid);
+      return n;
+    };
+    const bn = (n: number | null) => (n === null ? "Not verified" : `US$${n.toLocaleString("en-US", { maximumFractionDigits: 1 })}bn`);
+    const signed = (n: number) => (n > 0 ? `+${n.toLocaleString("en-US", { maximumFractionDigits: 1 })}` : n.toLocaleString("en-US", { maximumFractionDigits: 1 }));
+
+    const decreeRow = (c: DecreeChange) => {
+      const chip = { kept: ["chip", "Kept"], reworded: ["chip reword", "Reworded"], added: ["chip add", "Added"], dropped: ["chip drop", "Dropped"] }[c.kind];
+      const titleCell = el("td");
+      if (c.kind === "reworded") {
+        titleCell.append(el("div", { class: "muted small" }, `Was: ${c.before.title}`), el("div", {}, `Now: ${c.after.title}`));
+      } else titleCell.append("after" in c ? c.after.title : c.before.title);
+      const rank =
+        c.kind === "added" ? `#${c.after.rank}` : c.kind === "dropped" ? `was #${c.before.rank}` : c.rankDelta === 0 ? `#${c.after.rank}` : `#${c.before.rank} → #${c.after.rank}`;
+      let cost = "";
+      if (c.kind === "added") cost = bn(c.after.annual_cost_usd_billion);
+      else if (c.kind === "dropped") cost = bn(c.before.annual_cost_usd_billion);
+      else cost = c.costDelta === null ? `${bn(c.before.annual_cost_usd_billion)} → ${bn(c.after.annual_cost_usd_billion)}` : c.costDelta === 0 ? bn(c.after.annual_cost_usd_billion) : `${bn(c.before.annual_cost_usd_billion)} → ${bn(c.after.annual_cost_usd_billion)} (${signed(c.costDelta)})`;
+      return el("tr", {}, el("td", {}, el("span", { class: chip[0] }, chip[1])), titleCell, el("td", { class: "n" }, rank), el("td", { class: "n" }, cost));
+    };
+
+    const render = () => {
+      const a = data.find((d) => d.date === pickA.value)!;
+      const b = data.find((d) => d.date === pickB.value)!;
+      out.replaceChildren();
+      if (a.date === b.date) {
+        out.append(el("div", { class: "panel soft", style: "max-width:68ch" }, el("p", {}, "Pick two different editions.")));
+        return;
+      }
+      const [early, late] = a.date < b.date ? [a, b] : [b, a];
+      const r = compareEditions(early.content, late.content);
+      const counts = (k: DecreeChange["kind"]) => r.decrees.filter((d) => d.kind === k).length;
+
+      out.append(
+        el("h2", {}, "Decrees"),
+        el("div", { class: "runfacts" },
+          el("span", { class: "chip" }, `${counts("kept")} kept`),
+          el("span", { class: "chip reword" }, `${counts("reworded")} reworded`),
+          el("span", { class: "chip add" }, `${counts("added")} added`),
+          el("span", { class: "chip drop" }, `${counts("dropped")} dropped`)),
+        el("div", { class: "table-wrap" },
+          el("table", {},
+            el("thead", {}, el("tr", {}, el("th", {}, "Change"), el("th", {}, "Decree"), el("th", {}, "Rank"), el("th", {}, "Cost per year"))),
+            el("tbody", {}, ...r.decrees.map(decreeRow)))),
+        el("h2", {}, "Budget"),
+        el("div", { class: "panel soft", style: "max-width:68ch" },
+          el("p", { class: "num", style: "font-family:var(--font-display);font-weight:700;font-size:1.4rem" },
+            `${bn(r.budget.before)} → ${bn(r.budget.after)}`),
+          el("p", { class: "muted small" }, r.budget.delta === null ? "Change not computable: at least one total was not verified." : `Change: ${signed(r.budget.delta)} billion US dollars a year.`)),
+        el("h2", {}, "The ten indicators"),
+        el("p", { class: "muted small" }, "Highlighted cells are figures the model marked as unverified."),
+        el("div", { class: "table-wrap" },
+          el("table", {},
+            el("thead", {}, el("tr", {}, el("th", {}, "Indicator"), el("th", {}, early.date), el("th", {}, late.date))),
+            el("tbody", {}, ...r.indicators.map((p) => {
+              const cell = (i: typeof p.before) => i
+                ? el("td", { class: i.verified ? "" : "unverified" }, el("div", { class: "num" }, i.value), el("div", { class: "muted small" }, `Data year ${i.data_year}${i.verified ? "" : " · unverified"}`))
+                : el("td", {}, "—");
+              return el("tr", {}, el("td", {}, `${p.id}. ${(p.after ?? p.before)!.name}${p.changed ? "" : " (unchanged)"}`), cell(p.before), cell(p.after));
+            })))),
+      );
+    };
+    pickA.addEventListener("change", render);
+    pickB.addEventListener("change", render);
+    render();
+  }
+</script>

@@ -1,0 +1,5 @@
+# LF everywhere, so files hash the same on every machine.
+* text=auto eol=lf
+# The prompt is sent byte for byte and its SHA-256 is recorded: never convert it.
+prompt/king.md -text
+editions/**/*.json -text

@@ -1,0 +1,68 @@
+---
+import Base from "../layouts/Base.astro";
+import { editions, formatDate } from "../lib/editions";
+import { compact, parseFigure } from "../lib/numbers";
+
+const chronological = [...editions].reverse();
+const W = 300;
+const H = 120;
+const PAD = { l: 44, r: 10, t: 10, b: 22 };
+
+const charts = Array.from({ length: 10 }, (_, k) => {
+  const id = k + 1;
+  const series = chronological
+    .map((e) => ({ date: e.edition_date, ind: e.content.indicators.find((i) => i.id === id) }))
+    .filter((p) => p.ind)
+    .map((p) => ({ date: p.date, value: p.ind!.value, year: p.ind!.data_year, verified: p.ind!.verified, n: parseFigure(p.ind!.value) }));
+  const name = chronological.at(-1)?.content.indicators.find((i) => i.id === id)?.name ?? `Indicator ${id}`;
+  const nums = series.filter((p) => p.n !== null).map((p) => p.n!);
+  let lo = Math.min(...nums, 0);
+  let hi = Math.max(...nums);
+  if (!(hi > lo)) hi = lo + 1;
+  const x = (i: number) => (series.length === 1 ? (PAD.l + W - PAD.r) / 2 : PAD.l + (i * (W - PAD.l - PAD.r)) / (series.length - 1));
+  const y = (n: number) => PAD.t + (H - PAD.t - PAD.b) * (1 - (n - lo) / (hi - lo));
+  const pts = series.map((p, i) => ({ ...p, x: x(i), y: p.n === null ? null : y(p.n) }));
+  const path = pts.filter((p) => p.y !== null).map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y!.toFixed(1)}`).join(" ");
+  return { id, name, pts, path, lo, hi, plotted: nums.length };
+});
+---
+<Base title="Indicators" wide>
+  <header class="lead" style="max-width:68ch">
+    <p class="eyebrow">Indicators</p>
+    <h1>The ten numbers, edition by edition</h1>
+    <p class="standfirst">Every edition reports the same ten indicators. Each chart plots the figure the model reported at each run, read from its own wording. Hollow points are figures the model marked as unverified.</p>
+  </header>
+  {editions.length === 0 ? (
+    <div class="panel soft" style="max-width:68ch"><p>No editions yet.</p></div>
+  ) : (
+    <div class="charts">
+      {charts.map((c) => (
+        <section class="chart" aria-labelledby={`ind-${c.id}`}>
+          <h3 id={`ind-${c.id}`}>{c.id}. {c.name}</h3>
+          {c.plotted > 0 && (
+            <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${c.name} across editions`}>
+              <line class="axis" x1={PAD.l} x2={W - PAD.r} y1={H - PAD.b} y2={H - PAD.b} />
+              <text class="lbl" x={PAD.l - 6} y={PAD.t + 4} text-anchor="end">{compact(c.hi)}</text>
+              <text class="lbl" x={PAD.l - 6} y={H - PAD.b} text-anchor="end">{compact(c.lo)}</text>
+              {c.path && <path class="line" d={c.path} />}
+              {c.pts.map((p) => p.y !== null && (
+                <circle class={p.verified ? "pt" : "pt unverified"} cx={p.x} cy={p.y} r="4"><title>{p.date}: {p.value}{p.verified ? "" : " (unverified)"}</title></circle>
+              ))}
+              {c.pts.map((p, i) => (c.pts.length <= 6 || i === 0 || i === c.pts.length - 1) && (
+                <text class="lbl" x={p.x} y={H - 6} text-anchor="middle">{p.date.slice(0, 7)}</text>
+              ))}
+            </svg>
+          )}
+          <ul class="vals">
+            {c.pts.map((p) => (
+              <li>
+                <span class="muted">{formatDate(p.date)}:</span> <span class="num">{p.value}</span> <span class="muted">(data year {p.year})</span>
+                {!p.verified && <> <span class="chip flag">Unverified</span></>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  )}
+</Base>
