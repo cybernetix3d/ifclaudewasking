@@ -27,13 +27,12 @@ const charts = Array.from({ length: 10 }, (_, k) => {
 });
 ---
 <Base title="Indicators" wide>
-  <header class="lead" style="max-width:68ch">
-    <p class="eyebrow">Indicators</p>
+  <header class="hero measure">
     <h1>The ten numbers, edition by edition</h1>
     <p class="standfirst">Every edition reports the same ten indicators. Each chart plots the figure the model reported at each run, read from its own wording. Hollow points are figures the model marked as unverified.</p>
   </header>
   {editions.length === 0 ? (
-    <div class="panel soft" style="max-width:68ch"><p>No editions yet.</p></div>
+    <div class="sheet mark measure"><p>No editions yet.</p></div>
   ) : (
     <div class="charts">
       {charts.map((c) => (
@@ -56,8 +55,8 @@ const charts = Array.from({ length: 10 }, (_, k) => {
           <ul class="vals">
             {c.pts.map((p) => (
               <li>
-                <span class="muted">{formatDate(p.date)}:</span> <span class="num">{p.value}</span> <span class="muted">(data year {p.year})</span>
-                {!p.verified && <> <span class="chip flag">Unverified</span></>}
+                <span class="quiet">{formatDate(p.date)}:</span> <span class="num">{p.value}</span> <span class="quiet">(data year {p.year})</span>
+                {!p.verified && <> <span class="tag flag">Unverified</span></>}
               </li>
             ))}
           </ul>

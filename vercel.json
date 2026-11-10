@@ -3,5 +3,13 @@
   "trailingSlash": false,
   "framework": "astro",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.ifclaudewasking.com" }],
+      "destination": "https://ifclaudewasking.com/:path*",
+      "permanent": true
+    }
+  ]
 }

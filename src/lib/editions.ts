@@ -45,3 +45,8 @@ export function answeringModel(e: Edition): string {
 export function helperModels(e: Edition): string[] {
   return e.meta.model_returned.filter((m) => m !== answeringModel(e));
 }
+
+/** 1 for the first edition ever published, counting up. */
+export function editionNumber(e: Edition): number {
+  return editions.length - editions.findIndex((x) => x.edition_date === e.edition_date);
+}

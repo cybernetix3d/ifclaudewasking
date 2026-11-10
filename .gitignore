@@ -6,3 +6,6 @@ dist/
 editions/raw/failed/
 .vercel/
 public/edition-zero/
+
+.vercel
+.env*

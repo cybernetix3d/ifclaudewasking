@@ -1,31 +1,31 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { answeringModel, editions, formatDate, formatBillions } from "../../lib/editions";
+import { answeringModel, editionNumber, editions, formatDate, formatBillions } from "../../lib/editions";
 ---
-<Base title="Editions">
-  <header class="lead">
-    <p class="eyebrow">Timeline</p>
+<Base title="All editions">
+  <header class="hero">
     <h1>Every edition</h1>
-    <p class="standfirst">Newest first. Each one is the same prompt, answered on its run date with web research, and published unedited.</p>
+    <p class="standfirst">The same prompt, answered every three months by the newest Claude model, with fresh research each time. Newest first.</p>
   </header>
   {editions.length === 0 ? (
-    <div class="panel soft"><p>No editions yet. The first one is coming.</p></div>
+    <div class="sheet mark"><p>No editions yet. The first runs on the next scheduled date.</p></div>
   ) : (
-    <ol class="timeline">
+    <ol class="register">
       {editions.map((e) => (
         <li>
-          <a class="card" href={`/editions/${e.edition_date}`}>
-            <div class="date">{formatDate(e.edition_date)}</div>
-            <div class="runfacts" style="margin-top:10px">
-              <span class="chip">{answeringModel(e)}</span>
-              <span class="chip"><b class="num">{e.content.decrees.length}</b> decrees</span>
-              <span class="chip">{formatBillions(e.content.budget.total_annual_cost_usd_billion)} a year</span>
+          <a href={`/editions/${e.edition_date}`}>
+            <div>
+              <div class="r-date">{formatDate(e.edition_date)}</div>
+              <div class="r-meta">Edition {editionNumber(e)}</div>
             </div>
-            <p class="sum">{e.content.summary}</p>
+            <div>
+              <div class="r-sum">{e.content.summary}</div>
+              <div class="r-meta">{answeringModel(e)}, {e.content.decrees.length} decrees, {formatBillions(e.content.budget.total_annual_cost_usd_billion)} a year</div>
+            </div>
           </a>
         </li>
       ))}
     </ol>
   )}
-  <p class="muted small" style="margin-top:32px">Before the series began there was <a href="/edition-zero/seven-weeks-as-king.html">edition zero</a>, a one-off answer to a different question. It is not part of this timeline.</p>
+  <p class="quiet small" style="margin-top:32px">Before the series there was <a href="/edition-zero/seven-weeks-as-king.html">edition zero</a>, a one-off answer to a different question. It is kept for the record and is not counted here.</p>
 </Base>

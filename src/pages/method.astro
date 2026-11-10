@@ -6,13 +6,12 @@ const repoReady = !REPO_URL.includes("OWNER");
 const history = [...editions].reverse();
 ---
 <Base title="Method">
-  <header class="lead">
-    <p class="eyebrow">Method</p>
+  <header class="hero">
     <h1>How this works</h1>
     <p class="standfirst">Every {config.cadence_months} months the same prompt goes to the latest Claude model. It researches the state of the world on the web, gives its one-year plan as king, and the answer is published exactly as returned.</p>
   </header>
 
-  <div class="panel soft">
+  <div class="sheet mark">
     <p><strong>Nothing is edited by a human.</strong> The model's answer is checked against a fixed format and then either published verbatim or not published at all. No one trims, corrects or rewrites it. If an answer fails the format check twice, that edition is skipped and the failure is logged.</p>
   </div>
 
@@ -36,7 +35,7 @@ const history = [...editions].reverse();
   <p>Current settings: model <code>{config.model}</code>, effort <code>{config.effort}</code>, at most {config.max_turns} research turns. When Anthropic releases a newer frontier model, the setting is changed to it and the change shows in the model history below.</p>
 
   <h2 id="models">Model history</h2>
-  {history.length === 0 ? <p class="muted">No editions yet.</p> : (
+  {history.length === 0 ? <p class="quiet">No editions yet.</p> : (
     <div class="table-wrap">
       <table>
         <thead><tr><th>Edition</th><th>Model</th><th>Effort</th><th>Searches</th><th>Pages read</th></tr></thead>
@@ -44,7 +43,7 @@ const history = [...editions].reverse();
           {history.map((e) => (
             <tr>
               <td><a href={`/editions/${e.edition_date}`}>{formatDate(e.edition_date)}</a></td>
-              <td><code>{answeringModel(e)}</code>{helperModels(e).length > 0 && <span class="muted small"> + {helperModels(e).join(", ")} for page reading</span>}</td>
+              <td><code>{answeringModel(e)}</code>{helperModels(e).length > 0 && <span class="quiet small"> + {helperModels(e).join(", ")} for page reading</span>}</td>
               <td>{e.meta.effort}</td>
               <td class="n">{e.meta.searches}</td>
               <td class="n">{e.meta.fetches}</td>

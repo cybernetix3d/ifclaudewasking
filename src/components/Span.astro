@@ -1,0 +1,26 @@
+---
+// The reign as a dimension line: day 1 to day 365 in the plan's own phases, then a dashed
+// run-out for day 366, when the power is gone.
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+const PHASES = [
+  { days: 30, label: "First 30 days" },
+  { days: 61, label: "Q1" },
+  { days: 91, label: "Q2" },
+  { days: 92, label: "Q3" },
+  { days: 91, label: "Q4" },
+];
+---
+<figure class:list={["span", { compact }]} aria-label="One year: the first 30 days, then quarters one to four, ending on day 365. Day 366 follows, after the power ends." style="margin-left:0;margin-right:0">
+  <div class="span-caption" aria-hidden="true"><span>Day 1</span><span>Day 365</span></div>
+  <div class="span-track" aria-hidden="true">
+    {PHASES.map((p, i) => <div class:list={["span-seg", { end: i === PHASES.length - 1 }]} style={`flex:${p.days} 1 0`} />)}
+    <div class="span-out" />
+  </div>
+  <div class="span-labels" aria-hidden="true">
+    {PHASES.map((p) => <span style={`flex:${p.days} 1 0`}>{p.label}</span>)}
+    <span class="out">Day 366</span>
+  </div>
+</figure>
