@@ -97,20 +97,24 @@ code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-siz
 .runfacts b { color: var(--ink); font-weight: 700; }
 
 /* the dimension line: day 1 to day 365, then the run-out to day 366 */
-.span { margin: 36px 0 8px; font-family: var(--display); }
-.span-track { display: flex; align-items: stretch; height: 34px; }
-.span-seg { position: relative; border-left: 1px solid var(--ink); display: flex; align-items: flex-end; }
-.span-seg::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1.5px solid var(--ink); }
-.span-seg:first-child::after { content: ""; position: absolute; left: -1px; top: 50%; width: 9px; height: 9px; border-left: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); transform: translate(0, -50%) rotate(45deg); transform-origin: center; }
-.span-seg.end { border-right: 1px solid var(--ink); }
-.span-out { flex: 0 0 64px; position: relative; }
-.span-out::before { content: ""; position: absolute; left: 0; right: 8px; top: 50%; border-top: 1.5px dashed var(--line-strong); }
-.span-labels { display: flex; font-size: .78rem; color: var(--ink-2); margin-top: 6px; }
-.span-labels span { padding-left: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.span-labels .out { flex: 0 0 64px; text-align: right; padding-left: 0; }
-.span-caption { display: flex; justify-content: space-between; font-size: .82rem; color: var(--ink); font-weight: 600; margin-bottom: 4px; }
-.span-caption span:last-child { margin-right: 64px; }
+.span { margin: 40px 0 8px; font-family: var(--display); }
+.hero .span { width: min(1032px, calc(100vw - 48px)); }
+.span-track { display: flex; align-items: stretch; height: 44px; }
+/* phase boundaries: short ticks; the two ends of the year: full-height extension lines */
+.span-seg { position: relative; }
+.span-seg::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2.5px solid var(--ink); transform: translateY(-50%); }
+.span-seg::after { content: ""; position: absolute; left: 0; top: 30%; bottom: 30%; border-left: 1.5px solid var(--ink); }
+.span-seg:first-child::after { top: 0; bottom: 0; border-left-width: 2px; }
+.span-seg.end { box-shadow: inset -2px 0 0 var(--ink); }
+.span-out { flex: 0 0 72px; position: relative; }
+.span-out::before { content: ""; position: absolute; left: 0; right: 10px; top: 50%; border-top: 2.5px dashed var(--line-strong); transform: translateY(-50%); }
+.span-labels { display: flex; font-size: .82rem; color: var(--ink-2); margin-top: 8px; }
+.span-labels span { padding-left: 6px; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.span-labels .out { flex: 0 0 72px; text-align: right; padding-left: 0; color: var(--ink); font-weight: 600; }
+.span-caption { display: flex; justify-content: space-between; font-size: .88rem; color: var(--ink); font-weight: 700; margin-bottom: 6px; }
+.span-caption span:last-child { margin-right: 72px; }
 .span.compact { margin-top: 20px; }
+.span.compact .span-track { height: 30px; }
 
 /* sheets: drawing-sheet surfaces, used sparingly */
 .sheet { margin-top: 24px; background: var(--sheet); border: 1px solid var(--line); border-radius: 3px; padding: 20px 22px; }
