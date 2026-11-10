@@ -1,26 +1,39 @@
 ---
 import "../styles/global.css";
+import { latest } from "../lib/editions";
 
 interface Props {
   title: string;
   description?: string;
   wide?: boolean;
+  /** "website" for the landing and index pages, "article" for an edition. */
+  ogType?: "website" | "article";
+  /** ISO date an article was published. */
+  published?: string;
+  /** schema.org objects to embed as JSON-LD. */
+  jsonLd?: Record<string, unknown>[];
 }
 const SITE = "If Claude Was King";
 const {
   title,
   description = "Every three months, the latest Claude model is made king of the world for a year and asked for its plan. Each answer is published unedited.",
   wide = false,
+  ogType = "website",
+  published,
+  jsonLd = [],
 } = Astro.props;
+const ORIGIN = "https://ifclaudewasking.com";
 const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
 const nav = [
-  ["/", "Latest"],
+  [latest ? `/editions/${latest.edition_date}` : "/editions", "Latest edition"],
   ["/editions", "All editions"],
   ["/compare", "Compare"],
   ["/indicators", "Plan vs reality"],
   ["/method", "Method"],
 ];
-const isCurrent = (href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`));
+const isCurrent = (href: string) => path === href || (href !== "/editions" && path.startsWith(`${href}/`));
+const canonical = ORIGIN + (path === "/" ? "/" : path);
+const image = `${ORIGIN}/og.png`;
 const fullTitle = title === SITE ? SITE : `${title} | ${SITE}`;
 ---
 <!doctype html>
@@ -30,9 +43,25 @@ const fullTitle = title === SITE ? SITE : `${title} | ${SITE}`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta property="og:title" content={fullTitle} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta property="og:site_name" content={SITE} />
+    <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="If Claude Was King: a dimension line from day 1 to day 365, drawn as a blueprint." />
+    <meta property="og:locale" content="en_GB" />
+    {published && <meta property="article:published_time" content={published} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <link rel="alternate" type="application/rss+xml" title="If Claude Was King: new editions" href="/feed.xml" />
+    {jsonLd.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj).replace(/</g, "\\u003c")} />)}
     <meta name="theme-color" content="#eef3f6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f2a4d" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

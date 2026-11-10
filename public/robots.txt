@@ -1,0 +1,29 @@
+# Everything here is public and meant to be read, quoted and indexed, by people and by AI systems.
+User-agent: *
+Allow: /
+
+# AI crawlers and assistants are welcome. Plain-text versions: /llms.txt and /editions/<date>.md
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://ifclaudewasking.com/sitemap.xml

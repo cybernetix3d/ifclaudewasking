@@ -28,6 +28,14 @@ Read `DESIGN.md` and follow it. It holds the honesty rules for how numbers are s
 - `src/lib/compare.ts` is pure and shared by tests and the `/compare` page (runs client-side from data embedded at build; no network calls). Decrees match by exact title, then greedy Jaccard similarity above `REWORD_THRESHOLD`.
 - `src/lib/editions.ts` loads `editions/*.json` at build via `import.meta.glob`. `REPO_URL` is a placeholder until the GitHub repo exists.
 
+## Discovery (SEO and AI search)
+
+- `/` is the landing page; the full latest edition lives at `/editions/<date>`. The landing page pulls everything from the latest edition and forecast, so it updates itself each quarter.
+- `src/layouts/Base.astro` sets canonical, Open Graph, Twitter and JSON-LD for every page. Pages pass `jsonLd`, `ogType` and `published`.
+- Generated at build: `/sitemap.xml`, `/feed.xml`, `/llms.txt`, `/editions/<date>.md` (plain-text edition), `/data/index.json`, `/data/editions/<date>.json`, `/data/forecasts/<date>.json`. `public/robots.txt` welcomes AI crawlers. `src/lib/faq.ts` feeds the landing FAQ, the FAQPage JSON-LD and llms.txt, so edit questions there only.
+- `public/og.png` is the share image; regenerate with `npm run og` (`scripts/make-og.mjs`) and commit it.
+- Any claim in metadata must be as honest as the page: never describe with-plan forecasts as results.
+
 ## Invariants
 
 - `prompt/king.md` and `prompt/forecast.md` are never edited. Its SHA-256 is recorded per edition.

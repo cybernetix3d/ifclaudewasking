@@ -16,7 +16,8 @@
     "check:secrets": "node scripts/check-secrets.mjs",
     "prebuild": "node scripts/copy-edition-zero.mjs",
     "predev": "node scripts/copy-edition-zero.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "og": "node scripts/make-og.mjs"
   },
   "dependencies": {
     "ajv": "^8.20.0",

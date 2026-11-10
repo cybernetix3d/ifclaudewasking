@@ -1,4 +1,7 @@
-// Copies edition zero into public/ so the site serves it. The original in edition-zero/ is the source of truth.
+// Copies files the site serves as-is into public/: edition zero and the JSON Schemas.
+// The originals in edition-zero/ and schema/ are the source of truth.
 import { cpSync, mkdirSync } from "node:fs";
 mkdirSync("public/edition-zero", { recursive: true });
 cpSync("edition-zero/seven-weeks-as-king.html", "public/edition-zero/seven-weeks-as-king.html");
+mkdirSync("public/schema", { recursive: true });
+for (const f of ["edition.schema.json", "forecast.schema.json"]) cpSync(`schema/${f}`, `public/schema/${f}`);

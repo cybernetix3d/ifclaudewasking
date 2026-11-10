@@ -67,7 +67,7 @@ a:hover { text-decoration-thickness: 2px; }
 .page { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
 main { max-width: 42rem; }
 main.wide { max-width: none; }
-main.wide > .measure { max-width: 42rem; }
+main.wide .measure { max-width: 42rem; }
 
 /* type scale: 1.0625rem base, ratio ~1.333 */
 h1, h2, h3 { font-family: var(--display); font-weight: 800; line-height: 1.08; margin: 0; text-wrap: balance; color: var(--ink); }
@@ -264,6 +264,35 @@ td.unverified .num { background: var(--flag-soft); padding: 0 4px; }
   .js [data-reveal] .reveal { clip-path: inset(-20px 100% -20px -20px); transition: clip-path 1.4s cubic-bezier(.3, .6, .2, 1); }
   .js [data-reveal].in-view .reveal { clip-path: inset(-20px -80px -20px -20px); }
 }
+
+/* landing page */
+.landing-h1 { max-width: 15em; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px 12px; margin-top: 28px; }
+.btn { display: inline-block; font: 700 .98rem var(--display); color: var(--ink); background: var(--sheet); border: 1.5px solid var(--ink); border-radius: 3px; padding: 9px 16px; text-decoration: none; cursor: pointer; }
+.btn:hover { background: var(--mark-soft); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--mark); border-color: var(--mark); }
+.said { margin: 18px 0 0; padding: 20px 22px; background: var(--sheet); border: 1px solid var(--line); border-radius: 3px; font-size: 1.12rem; line-height: 1.6; }
+.said p { margin: 0; }
+.two-up { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px 48px; margin-top: 12px; max-width: 60rem; }
+.decree-list { padding-left: 1.3em; }
+.decree-list li { margin-top: 8px; }
+.decree-list li::marker { font: 700 .95rem var(--display); color: var(--mark); }
+.duels { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 40px; margin-top: 28px; border-top: 1.5px solid var(--ink); }
+.duel { padding: 20px 0 22px; border-bottom: 1px solid var(--line); }
+.duel-name { font: 600 .95rem var(--display); color: var(--ink-2); }
+.duel-row { display: flex; align-items: flex-start; gap: 28px; margin-top: 10px; }
+.duel-num { font: 800 2.5rem/1 var(--display); font-stretch: 112%; font-variant-numeric: tabular-nums lining-nums; color: var(--ink); }
+.duel-num.plan { color: var(--mark); text-decoration: underline dashed 2px; text-underline-offset: 8px; }
+.duel-cap { font: 500 .84rem var(--display); color: var(--ink-2); margin-top: 10px; max-width: 9.5rem; line-height: 1.3; }
+.duel-unit { font: 500 .84rem var(--display); color: var(--ink-2); margin-top: 10px; }
+.steps { padding-left: 1.4em; }
+.steps li { margin-top: 12px; padding-left: 4px; }
+.steps li::marker { font: 800 1rem var(--display); color: var(--mark); }
+.faq { border-top: 1.5px solid var(--ink); margin-top: 20px; }
+.faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
+.faq summary { cursor: pointer; font: 700 1.05rem var(--display); }
+.faq p { margin-top: 10px; }
 
 /* forms */
 .pickers { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; margin-top: 28px; }

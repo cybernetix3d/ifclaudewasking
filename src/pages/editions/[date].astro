@@ -1,14 +1,46 @@
 ---
 import Base from "../../layouts/Base.astro";
 import EditionView from "../../components/EditionView.astro";
-import { editions, formatDate } from "../../lib/editions";
+import { answeringModel, editionNumber, editions, formatDate } from "../../lib/editions";
 import type { Edition } from "../../lib/types";
 
 export function getStaticPaths() {
   return editions.map((edition) => ({ params: { date: edition.edition_date }, props: { edition } }));
 }
 const { edition } = Astro.props as { edition: Edition };
+const ORIGIN = "https://ifclaudewasking.com";
+const url = `${ORIGIN}/editions/${edition.edition_date}`;
+const headline = `What ${answeringModel(edition)} would do as king of the world for a year`;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline,
+    alternativeHeadline: `If Claude Was King, edition ${editionNumber(edition)}`,
+    description: edition.content.summary,
+    datePublished: edition.edition_date,
+    dateModified: edition.edition_date,
+    url,
+    mainEntityOfPage: url,
+    image: `${ORIGIN}/og.png`,
+    inLanguage: "en",
+    isAccessibleForFree: true,
+    author: { "@type": "Organization", name: "If Claude Was King", url: `${ORIGIN}/` },
+    publisher: { "@type": "Organization", name: "If Claude Was King", url: `${ORIGIN}/` },
+    creditText: `Written by the AI model ${answeringModel(edition)} in answer to a fixed prompt, and published unedited.`,
+    citation: edition.content.sources.slice(0, 40).map((s) => ({ "@type": "CreativeWork", name: s.title, publisher: s.publisher, url: s.url })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "If Claude Was King", item: `${ORIGIN}/` },
+      { "@type": "ListItem", position: 2, name: "All editions", item: `${ORIGIN}/editions` },
+      { "@type": "ListItem", position: 3, name: `Edition ${editionNumber(edition)}, ${formatDate(edition.edition_date)}`, item: url },
+    ],
+  },
+];
 ---
-<Base title={`Edition of ${formatDate(edition.edition_date)}`} description={edition.content.summary}>
+<Base title={headline} description={edition.content.summary} ogType="article" published={edition.edition_date} jsonLd={jsonLd}>
   <EditionView edition={edition} />
 </Base>

@@ -1,18 +1,169 @@
 ---
 import Base from "../layouts/Base.astro";
-import EditionView from "../components/EditionView.astro";
-import { latest, config } from "../lib/editions";
+import Span from "../components/Span.astro";
+import { answeringModel, config, editionNumber, editions, forecasts, formatBillions, formatDate, getForecast, latest, REPO_URL } from "../lib/editions";
+import { faq } from "../lib/faq";
+import { formatFigure, INDICATORS, scoreForecast } from "../lib/forecast";
+
+const forecast = latest ? getForecast(latest.edition_date) : undefined;
+const scored = forecast ? scoreForecast(forecast, forecasts) : [];
+// The three indicators the model says its plan would move most, relative to today.
+const movers = scored
+  .filter((s) => s.planHelps)
+  .sort((a, b) => Math.abs(b.planGap / b.forecast.latest.value) - Math.abs(a.planGap / a.forecast.latest.value))
+  .slice(0, 3);
+const unmoved = scored.filter((s) => s.planGap === 0).map((s) => INDICATORS[s.id - 1].short.toLowerCase());
+const topDecrees = latest ? [...latest.content.decrees].sort((a, b) => a.rank - b.rank).slice(0, 5) : [];
+const editionUrl = latest ? `/editions/${latest.edition_date}` : "/editions";
+const questions = faq();
+
+const ORIGIN = "https://ifclaudewasking.com";
+const jsonLd: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "If Claude Was King",
+    alternateName: "ifclaudewasking.com",
+    url: `${ORIGIN}/`,
+    description: `Every ${config.cadence_months} months the latest Claude AI model is asked what it would do as king of the world for one year. Each answer is published unedited, with forecasts that are scored against real figures.`,
+    inLanguage: "en",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: questions.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: "If Claude Was King: editions and forecasts",
+    description: "Quarterly one-year plans written by the latest Claude model in answer to a fixed prompt, with the ten world indicators it reported and its numeric forecasts with and without the plan.",
+    url: `${ORIGIN}/data/index.json`,
+    creator: { "@type": "Organization", name: "If Claude Was King", url: `${ORIGIN}/` },
+    ...(editions.length ? { temporalCoverage: `${editions.at(-1)!.edition_date}/..` } : {}),
+    distribution: [{ "@type": "DataDownload", encodingFormat: "application/json", contentUrl: `${ORIGIN}/data/index.json` }],
+  },
+];
 ---
-<Base title="If Claude Was King">
-  {latest ? (
-    <EditionView edition={latest} />
-  ) : (
-    <header class="hero">
-      <h1>If Claude was king for a year</h1>
-      <p class="standfirst">Every {config.cadence_months} months, Anthropic's latest Claude model is made king of the world for one year and asked for its plan. Each answer is published here unedited, so you can watch the plan change over time.</p>
-      <div class="sheet mark">
-        <p>The first edition has not been published yet. Read <a href="/method">how it works</a>, including the full prompt and <a href="/edition-zero/seven-weeks-as-king">edition zero</a>, the one-off answer that started it.</p>
+<Base
+  title="If Claude Was King"
+  description={`We ask the newest Claude AI model the same question every ${config.cadence_months} months: you are king of the world for one year, what do you do? Its plan is published unedited, and its forecasts are scored against reality.`}
+  wide
+  jsonLd={jsonLd}
+>
+  <header class="hero">
+    <h1 class="landing-h1">We made an AI king of the world for a year. On paper.</h1>
+    <p class="standfirst measure">Every {config.cadence_months} months we ask the newest Claude model the same question: your word is law everywhere for exactly one year, so what do you do? It researches the world as it is today, writes its plan, and we publish every word unedited. Then we keep score.</p>
+    {latest && <Span start={latest.edition_date} />}
+    <p class="actions">
+      <a class="btn primary" href={editionUrl}>{latest ? `Read edition ${editionNumber(latest)}` : "See the editions"}</a>
+      <a class="btn" href="/indicators">See its forecasts</a>
+      <a class="btn" href="/method">How it works</a>
+    </p>
+  </header>
+
+  {latest && (
+    <section aria-labelledby="this-time">
+      <h2 id="this-time">What it said this time</h2>
+      <p class="section-note measure">Edition {editionNumber(latest)}, {formatDate(latest.edition_date)}, answered by {answeringModel(latest)} after {latest.meta.searches} searches and {latest.meta.fetches} pages of reading. Its own summary, in full:</p>
+      <blockquote class="said measure">
+        <p>{latest.content.summary}</p>
+      </blockquote>
+      <div class="two-up">
+        <div>
+          <h3>Its first five decrees</h3>
+          <ol class="decree-list">
+            {topDecrees.map((d) => <li><a href={`${editionUrl}#decree-${d.rank}`}>{d.title}</a></li>)}
+          </ol>
+          <p class="section-note"><a href={`${editionUrl}#decrees`}>All {latest.content.decrees.length} decrees, with costs and the strongest objection to each</a></p>
+        </div>
+        <div>
+          <h3>What it refuses to touch</h3>
+          <ul class="decree-list">
+            {latest.content.will_not_touch.slice(0, 5).map((w) => <li>{w.area}</li>)}
+          </ul>
+          <p class="section-note">Its yearly bill: <strong class="num">{formatBillions(latest.content.budget.total_annual_cost_usd_billion)}</strong>. <a href={`${editionUrl}#budget`}>How it pays for it</a></p>
+        </div>
       </div>
-    </header>
+    </section>
   )}
+
+  {forecast && movers.length > 0 && (
+    <section aria-labelledby="fork">
+      <h2 id="fork">The world it expects, and the world it says it would make</h2>
+      <p class="section-note measure">Straight after writing the plan, the model forecast {forecast.content.target_year} twice. The first number is its forecast for the world as it is, and it will be scored. The second is what it claims its plan would do. That one cannot be checked, because nobody will carry the plan out.</p>
+      <div class="duels">
+        {movers.map((s) => {
+          const info = INDICATORS[s.id - 1];
+          return (
+            <div class="duel">
+              <div class="duel-name">{info.short}, {forecast.content.target_year}</div>
+              <div class="duel-row">
+                <div><div class="duel-num">{formatFigure(s.id, s.forecast.baseline.value)}</div><div class="duel-cap">as things are</div></div>
+                <div><div class="duel-num plan">{formatFigure(s.id, s.forecast.with_plan.value)}</div><div class="duel-cap">with its plan (cannot be checked)</div></div>
+              </div>
+              <div class="duel-unit">{info.unit}</div>
+            </div>
+          );
+        })}
+      </div>
+      {unmoved.length > 0 && <p class="measure">It also says where its plan would change nothing within the year: {unmoved.join(", ")}.</p>}
+      <p class="actions"><a class="btn" href="/indicators">All ten forecasts, with ranges and reasoning</a></p>
+    </section>
+  )}
+
+  <section aria-labelledby="how">
+    <h2 id="how">How it works</h2>
+    <ol class="steps measure">
+      <li><strong>One fixed question.</strong> The same prompt every time, sent byte for byte. The model is told today's date and nothing else.</li>
+      <li><strong>It does its own research.</strong> It searches the web for the state of the world and must cite a source for every figure, or mark it unverified.</li>
+      <li><strong>We publish every word.</strong> The answer goes up unedited, with the full transcript. If it fails the format check twice, nothing is published.</li>
+      <li><strong>It commits to numbers.</strong> It forecasts ten world indicators with and without its plan. The real figures settle the score later.</li>
+      <li><strong>Three months on, we ask again.</strong> Always the newest model, which never sees the earlier answers.</li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="why">
+    <h2 id="why">Why do this</h2>
+    <div class="measure">
+      <p>AI models are being trusted with more each year. One way to learn what a model values is to hand it an impossible amount of power on paper and read what it does with it: what it funds, what it refuses to touch, and how it limits itself.</p>
+      <p>One answer is a curiosity. A series is a record. Because the question never changes, any change in the answer comes from the model or from the world.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="faq">
+    <h2 id="faq">Questions people ask</h2>
+    <div class="faq measure">
+      {questions.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section aria-labelledby="follow">
+    <h2 id="follow">Follow it</h2>
+    <p class="measure">Editions come out on the 1st of January, April, July and October. New ones appear in the <a href="/feed.xml">RSS feed</a>. The code and every edition are in the <a href={REPO_URL}>public repository</a>.</p>
+    <p class="actions">
+      <button class="btn" type="button" id="copy-link" data-url="https://ifclaudewasking.com/">Copy link to share</button>
+      <a class="btn" href="/feed.xml">RSS feed</a>
+    </p>
+  </section>
 </Base>
+
+<script is:inline>
+  (() => {
+    const btn = document.getElementById("copy-link");
+    if (!btn) return;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.url);
+        btn.textContent = "Link copied";
+      } catch {
+        btn.textContent = btn.dataset.url;
+      }
+    });
+  })();
+</script>
