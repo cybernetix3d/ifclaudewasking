@@ -21,7 +21,7 @@ const PHASES = [
   <div class="span-track" aria-hidden="true">
     <div class="span-year">
       {PHASES.map((p, i) => <div class:list={["span-seg", { end: i === PHASES.length - 1 }]} style={`flex:${p.days} 1 0`} />)}
-      {start && <div class="span-now" hidden><span class="span-now-label"></span></div>}
+      {start && <div class="span-now" hidden></div>}
     </div>
     <div class="span-out" />
   </div>
@@ -50,8 +50,6 @@ const PHASES = [
         if (day <= 365) {
           marker.hidden = false;
           marker.style.left = (((day - 0.5) / 365) * 100).toFixed(2) + "%";
-          marker.querySelector(".span-now-label").textContent = "Day " + day;
-          if (day > 300) marker.classList.add("flip");
           const left = 365 - day;
           status.textContent =
             "Had this reign begun on " + fmt(start) + ", today would be day " + day + " of 365" +

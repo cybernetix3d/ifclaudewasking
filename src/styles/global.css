@@ -117,9 +117,7 @@ code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-siz
 /* today, inside the imagined year */
 .span-now { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 2.5px solid var(--mark); }
 .span-now::before { content: ""; position: absolute; left: -7.5px; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: var(--mark); transform: translateY(-50%); box-shadow: 0 0 0 4px var(--paper); }
-.span-now-label { position: absolute; left: 10px; top: -2px; font: 700 .8rem var(--display); color: var(--mark); white-space: nowrap; background: var(--paper); padding: 0 4px; }
-.span-now.flip .span-now-label { left: auto; right: 10px; }
-.span-status { font: 500 .92rem var(--display); color: var(--ink-2); margin-top: 12px; min-height: 1.4em; }
+.span-status { font: 600 .95rem var(--display); color: var(--mark); margin-top: 12px; min-height: 1.4em; }
 .span.over .span-seg::before { border-top-color: var(--line-strong); }
 .span.over .span-out::before { border-top-color: var(--mark); }
 .span.compact { margin-top: 20px; }
