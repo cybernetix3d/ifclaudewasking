@@ -9,3 +9,4 @@ public/edition-zero/
 
 .vercel
 .env*
+forecasts/raw/failed/

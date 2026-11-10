@@ -11,6 +11,11 @@ schema/edition.schema.json      JSON Schema for an edition file
 editions/YYYY-MM-DD.json        a published edition (metadata + the model's answer, verbatim)
 editions/raw/YYYY-MM-DD.json    the full Claude Code stream-json transcript of that run, with machine details stripped (see below)
 editions/raw/failed/            raw output of failed attempts (local only, gitignored)
+prompt/forecast.md              the fixed forecast prompt, sent after each edition with that edition's plan appended
+forecasts/YYYY-MM-DD.json       the forecast made straight after that edition (same layout: raw/, raw/failed/)
+schema/forecast.schema.json     JSON Schema for a forecast file
+data/pulse.json                 monthly public measurements (CO2, methane, temperature), refreshed weekly by CI
+DESIGN.md                       the design rules every change follows
 edition-zero/                   the original one-off answer, linked from /method, not in the timeline
 scripts/run-edition.ts          the runner
 src/                            the Astro site
@@ -41,6 +46,19 @@ The runner never edits, trims or fixes the model's content.
 - the home-folder prefix in tool results, replaced with `~`. Web fetch notes where it cached PDFs, using both the path and Claude Code's folder-name form (`C--Users-<name>-...`).
 
 Assistant messages, the result event and the structured answer are never touched. A note at the end of each transcript says what was removed. The runner refuses to publish if any form of the home folder or temp folder still appears in the transcript or edition. Raw output of failed attempts, in `editions/raw/failed/`, is kept unsanitised and is never committed.
+
+### The forecast step
+
+After the edition is committed, the runner makes a second headless call with `prompt/forecast.md` followed by the edition's `content` as JSON. The model forecasts next year's figure for each of the ten indicators twice, with 80% ranges: for the world as it is (`baseline`), and for a world that carried out its plan (`with_plan`). It is validated (ten indicators in order, low <= value <= high, target year is the year after the edition, no unit slips), saved to `forecasts/<date>.json` and committed.
+
+Scoring is in `src/lib/forecast.ts`: a baseline forecast is settled by the `latest` figure of the most recent later forecast whose data year is the target year (the year after, for warheads). The with-plan forecast is never scored. A failed forecast opens an issue and exits with code 2; the edition stays published.
+
+- `npm run edition -- --forecast-only --date <date>` makes the forecast for an existing edition.
+- `npm run edition -- --no-forecast` runs the edition alone.
+
+### The monthly measurements
+
+`.github/workflows/pulse.yml` runs `scripts/update-pulse.mjs` every Monday. It fetches three public CSVs (NOAA CO2 and methane, NASA GISTEMP), writes `data/pulse.json`, and commits only if the data changed, which redeploys the site. No secrets are involved.
 
 ## Run an edition locally
 

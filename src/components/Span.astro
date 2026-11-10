@@ -1,10 +1,13 @@
 ---
 // The reign as a dimension line: day 1 to day 365 in the plan's own phases, then a dashed
-// run-out for day 366, when the power is gone.
+// run-out for day 366, when the power is gone. Given a start date, it also shows where
+// today falls in that imagined year, so the line moves every day.
 interface Props {
   compact?: boolean;
+  /** YYYY-MM-DD: day 1 of the imagined reign (the edition date). */
+  start?: string;
 }
-const { compact = false } = Astro.props;
+const { compact = false, start } = Astro.props;
 const PHASES = [
   { days: 30, label: "30 days" },
   { days: 61, label: "Q1" },
@@ -13,14 +16,52 @@ const PHASES = [
   { days: 91, label: "Q4" },
 ];
 ---
-<figure class:list={["span", { compact }]} aria-label="One year: the first 30 days, then quarters one to four, ending on day 365. Day 366 follows, after the power ends." style="margin-left:0;margin-right:0">
+<figure class:list={["span", { compact }]} data-start={start} aria-label="One year: the first 30 days, then quarters one to four, ending on day 365. Day 366 follows, after the power ends.">
   <div class="span-caption" aria-hidden="true"><span>Day 1</span><span>Day 365</span></div>
   <div class="span-track" aria-hidden="true">
-    {PHASES.map((p, i) => <div class:list={["span-seg", { end: i === PHASES.length - 1 }]} style={`flex:${p.days} 1 0`} />)}
+    <div class="span-year">
+      {PHASES.map((p, i) => <div class:list={["span-seg", { end: i === PHASES.length - 1 }]} style={`flex:${p.days} 1 0`} />)}
+      {start && <div class="span-now" hidden><span class="span-now-label"></span></div>}
+    </div>
     <div class="span-out" />
   </div>
   <div class="span-labels" aria-hidden="true">
     {PHASES.map((p) => <span style={`flex:${p.days} 1 0`}>{p.label}</span>)}
     <span class="out">Day 366</span>
   </div>
+  {start && <figcaption class="span-status" aria-live="polite"></figcaption>}
 </figure>
+
+{start && (
+  <script is:inline>
+    (() => {
+      for (const fig of document.querySelectorAll(".span[data-start]:not([data-ready])")) {
+        fig.dataset.ready = "1";
+        const [y, m, d] = fig.dataset.start.split("-").map(Number);
+        const start = new Date(y, m - 1, d);
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const day = Math.round((today - start) / 86400000) + 1;
+        const status = fig.querySelector(".span-status");
+        const marker = fig.querySelector(".span-now");
+        const end = new Date(y, m - 1, d + 364);
+        const fmt = (dt) => dt.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+        if (day < 1) continue;
+        if (day <= 365) {
+          marker.hidden = false;
+          marker.style.left = (((day - 0.5) / 365) * 100).toFixed(2) + "%";
+          marker.querySelector(".span-now-label").textContent = "Day " + day;
+          if (day > 300) marker.classList.add("flip");
+          const left = 365 - day;
+          status.textContent =
+            "Had this reign begun on " + fmt(start) + ", today would be day " + day + " of 365" +
+            (left === 0 ? ", the last day." : ", with " + left + (left === 1 ? " day" : " days") + " of power left.");
+        } else {
+          fig.classList.add("over");
+          const ago = day - 365;
+          status.textContent = "This imagined reign would have ended on " + fmt(end) + ", " + ago + (ago === 1 ? " day" : " days") + " ago. Day 366 has come.";
+        }
+      }
+    })();
+  </script>
+)}

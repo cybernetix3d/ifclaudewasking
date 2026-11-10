@@ -50,3 +50,17 @@ export function helperModels(e: Edition): string[] {
 export function editionNumber(e: Edition): number {
   return editions.length - editions.findIndex((x) => x.edition_date === e.edition_date);
 }
+
+import type { Forecast } from "./forecast";
+
+const forecastFiles = import.meta.glob<Forecast>("/forecasts/*.json", { eager: true, import: "default" });
+
+/** Every published forecast, oldest first. */
+export const forecasts: Forecast[] = Object.values(forecastFiles).sort((a, b) => a.edition_date.localeCompare(b.edition_date));
+
+export function getForecast(date: string): Forecast | undefined {
+  return forecasts.find((f) => f.edition_date === date);
+}
+
+export const forecastText = readFileSync(path.join(process.cwd(), "prompt", "forecast.md"), "utf8");
+export const forecastSha = createHash("sha256").update(readFileSync(path.join(process.cwd(), "prompt", "forecast.md"))).digest("hex");

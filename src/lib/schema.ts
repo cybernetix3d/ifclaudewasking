@@ -66,22 +66,20 @@ const UNSUPPORTED_BY_MODEL = ["minimum", "maximum", "exclusiveMinimum", "exclusi
  * array-length constraints removed (minItems kept only as 0 or 1). The full schema is
  * still enforced locally by validateContent.
  */
-export function modelSchema(): Record<string, unknown> {
-  const strip = (node: unknown): unknown => {
-    if (Array.isArray(node)) return node.map(strip);
-    if (node && typeof node === "object") {
-      const out: Record<string, unknown> = {};
-      for (const [k, v] of Object.entries(node)) {
-        if (UNSUPPORTED_BY_MODEL.includes(k)) continue;
-        if (k === "minItems") {
-          out[k] = Math.min(Number(v), 1);
-          continue;
-        }
-        out[k] = strip(v);
-      }
-      return out;
+/** Strip the constraints structured output rejects from any schema node. */
+export function stripForModel(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(stripForModel);
+  if (node && typeof node === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(node)) {
+      if (UNSUPPORTED_BY_MODEL.includes(k)) continue;
+      out[k] = k === "minItems" ? Math.min(Number(v), 1) : stripForModel(v);
     }
-    return node;
-  };
-  return strip(schema.definitions.content) as Record<string, unknown>;
+    return out;
+  }
+  return node;
+}
+
+export function modelSchema(): Record<string, unknown> {
+  return stripForModel(schema.definitions.content) as Record<string, unknown>;
 }

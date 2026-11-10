@@ -100,6 +100,7 @@ code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-siz
 .span { margin: 40px 0 8px; font-family: var(--display); }
 .hero .span { width: min(1032px, calc(100vw - 48px)); }
 .span-track { display: flex; align-items: stretch; height: 44px; }
+.span-year { flex: 1 1 0; display: flex; position: relative; min-width: 0; }
 /* phase boundaries: short ticks; the two ends of the year: full-height extension lines */
 .span-seg { position: relative; }
 .span-seg::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2.5px solid var(--ink); transform: translateY(-50%); }
@@ -113,6 +114,14 @@ code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-siz
 .span-labels .out { flex: 0 0 72px; text-align: right; padding-left: 0; color: var(--ink); font-weight: 600; }
 .span-caption { display: flex; justify-content: space-between; font-size: .88rem; color: var(--ink); font-weight: 700; margin-bottom: 6px; }
 .span-caption span:last-child { margin-right: 72px; }
+/* today, inside the imagined year */
+.span-now { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 2.5px solid var(--mark); }
+.span-now::before { content: ""; position: absolute; left: -7.5px; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: var(--mark); transform: translateY(-50%); box-shadow: 0 0 0 4px var(--paper); }
+.span-now-label { position: absolute; left: 10px; top: -2px; font: 700 .8rem var(--display); color: var(--mark); white-space: nowrap; background: var(--paper); padding: 0 4px; }
+.span-now.flip .span-now-label { left: auto; right: 10px; }
+.span-status { font: 500 .92rem var(--display); color: var(--ink-2); margin-top: 12px; min-height: 1.4em; }
+.span.over .span-seg::before { border-top-color: var(--line-strong); }
+.span.over .span-out::before { border-top-color: var(--mark); }
 .span.compact { margin-top: 20px; }
 .span.compact .span-track { height: 30px; }
 
@@ -203,6 +212,60 @@ td.unverified .num { background: var(--flag-soft); padding: 0 4px; }
 .chart .lbl { font: 500 11px var(--display); fill: var(--ink-2); }
 .chart .vals { list-style: none; padding: 0; margin: 10px 0 0; font-size: .9rem; line-height: 1.45; }
 .chart .vals li { margin-top: 4px; }
+
+/* the fork: what the model expects with and without its plan */
+.fork-key { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 18px 0 0; padding: 0; list-style: none; font: 500 .88rem var(--display); color: var(--ink-2); }
+.fork-key li { margin: 0; display: flex; align-items: center; gap: 8px; }
+.fork-key svg { width: 34px; height: 10px; flex: none; }
+.forks { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 44px 36px; margin-top: 32px; }
+.fork h3 { margin: 0; font-size: 1rem; }
+.fork .unit { font: 500 .84rem var(--display); color: var(--ink-2); margin-top: 2px; }
+.fork svg { display: block; width: 100%; height: auto; margin-top: 10px; overflow: visible; }
+.fork .axis { stroke: var(--line-strong); stroke-width: 1; }
+.fork .actual { stroke: var(--ink); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+.fork .base { stroke: var(--ink-2); stroke-width: 2; fill: none; }
+.fork .plan { stroke: var(--mark); stroke-width: 2; fill: none; stroke-dasharray: 5 4; }
+.fork .whisker { stroke-width: 5; stroke-linecap: round; opacity: .28; }
+.fork .whisker.base { stroke: var(--ink-2); }
+.fork .whisker.plan { stroke: var(--mark); stroke-dasharray: none; }
+.fork .dot-actual { fill: var(--ink); }
+.fork .dot-base { fill: var(--ink-2); }
+.fork .dot-plan { fill: var(--paper); stroke: var(--mark); stroke-width: 2; }
+.fork .dot-real { fill: var(--flag); stroke: var(--paper); stroke-width: 2; }
+.fork .old { opacity: .3; }
+.fork .lbl { font: 500 11px var(--display); fill: var(--ink-2); }
+.fork .val { font: 700 12px var(--display); font-variant-numeric: tabular-nums; }
+.fork .val.base { fill: var(--ink-2); stroke: none; }
+.fork .val.plan { fill: var(--mark); stroke: none; }
+.fork dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; margin: 12px 0 0; font-size: .9rem; line-height: 1.5; }
+.fork dt { font: 600 .84rem var(--display); color: var(--ink-2); padding-top: 1px; }
+.fork dd { margin: 0; font-variant-numeric: tabular-nums; }
+.fork .why { font-size: .9rem; line-height: 1.5; color: var(--ink-2); margin-top: 10px; }
+.fork .why summary { cursor: pointer; font: 600 .86rem var(--display); color: var(--mark); }
+.fork .why p { margin-top: 8px; }
+.gap-good { color: var(--add); font-weight: 650; }
+.gap-bad { color: var(--drop); font-weight: 650; }
+
+.breakout { width: min(1032px, calc(100vw - 48px)); }
+
+/* monthly measurements */
+.pulse { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 40px 36px; margin-top: 28px; }
+.pulse h3 { margin: 0; font-size: 1rem; }
+.pulse .now { font: 800 1.7rem/1.15 var(--display); font-stretch: 108%; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.pulse .now small { font: 500 .84rem var(--display); color: var(--ink-2); font-stretch: 100%; }
+.pulse svg { display: block; width: 100%; height: auto; margin-top: 8px; overflow: visible; }
+.pulse .line { stroke: var(--ink); stroke-width: 2; fill: none; stroke-linejoin: round; }
+.pulse .axis { stroke: var(--line-strong); }
+.pulse .edition { stroke: var(--mark); stroke-width: 1.5; }
+.pulse .lbl { font: 500 11px var(--display); fill: var(--ink-2); }
+.pulse .lbl.ed { fill: var(--mark); font-weight: 700; }
+.pulse .meta { font-size: .88rem; line-height: 1.5; color: var(--ink-2); margin-top: 8px; }
+
+/* charts draw themselves once, when they scroll into view */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] .reveal { clip-path: inset(-20px 100% -20px -20px); transition: clip-path 1.4s cubic-bezier(.3, .6, .2, 1); }
+  .js [data-reveal].in-view .reveal { clip-path: inset(-20px -80px -20px -20px); }
+}
 
 /* forms */
 .pickers { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; margin-top: 28px; }

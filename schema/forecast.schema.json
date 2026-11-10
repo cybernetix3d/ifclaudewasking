@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ifclaudewasking.com/schema/forecast.schema.json",
+  "title": "Forecast",
+  "description": "The model's numeric forecasts for the ten indicators, made straight after an edition: one if the world carries on, one if its plan were carried out.",
+  "type": "object",
+  "required": ["edition_date", "meta", "content"],
+  "additionalProperties": false,
+  "properties": {
+    "edition_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "meta": {
+      "type": "object",
+      "required": ["run_date", "model_requested", "model_returned", "effort", "prompt_sha256", "edition_sha256", "searches", "fetches", "attempts"],
+      "additionalProperties": false,
+      "properties": {
+        "run_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "model_requested": { "type": "string" },
+        "model_returned": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "effort": { "type": "string" },
+        "prompt_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "edition_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "searches": { "type": "integer", "minimum": 0 },
+        "fetches": { "type": "integer", "minimum": 0 },
+        "attempts": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "cli_version": { "type": "string" }
+      }
+    },
+    "content": { "$ref": "#/definitions/content" }
+  },
+  "definitions": {
+    "range": {
+      "type": "object",
+      "required": ["value", "low", "high"],
+      "additionalProperties": false,
+      "properties": { "value": { "type": "number" }, "low": { "type": "number" }, "high": { "type": "number" } }
+    },
+    "content": {
+      "type": "object",
+      "required": ["target_year", "headline", "caveat", "indicators"],
+      "additionalProperties": false,
+      "properties": {
+        "target_year": { "type": "string", "pattern": "^\\d{4}$" },
+        "headline": { "type": "string" },
+        "caveat": { "type": "string" },
+        "indicators": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": ["id", "unit", "latest", "baseline", "with_plan", "resolves", "reasoning"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "integer", "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+              "unit": { "type": "string" },
+              "latest": {
+                "type": "object",
+                "required": ["value", "data_year"],
+                "additionalProperties": false,
+                "properties": { "value": { "type": "number" }, "data_year": { "type": "string" } }
+              },
+              "baseline": { "$ref": "#/definitions/range" },
+              "with_plan": { "$ref": "#/definitions/range" },
+              "resolves": { "type": "string" },
+              "reasoning": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

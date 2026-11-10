@@ -17,7 +17,7 @@ const nav = [
   ["/", "Latest"],
   ["/editions", "All editions"],
   ["/compare", "Compare"],
-  ["/indicators", "Indicators"],
+  ["/indicators", "Plan vs reality"],
   ["/method", "Method"],
 ];
 const isCurrent = (href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`));
@@ -40,6 +40,7 @@ const fullTitle = title === SITE ? SITE : `${title} | ${SITE}`;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Literata:ital,opsz,wght@0,7..72,400..650;1,7..72,400&display=swap" rel="stylesheet" />
     <script is:inline>
+      document.documentElement.classList.add("js");
       try {
         const t = localStorage.getItem("theme");
         if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
@@ -82,6 +83,14 @@ const fullTitle = title === SITE ? SITE : `${title} | ${SITE}`;
           sync();
         });
         mq.addEventListener("change", sync);
+        // charts draw themselves once, when they first scroll into view
+        const targets = document.querySelectorAll("[data-reveal]");
+        if ("IntersectionObserver" in window) {
+          const io = new IntersectionObserver((entries) => {
+            for (const en of entries) if (en.isIntersecting) { en.target.classList.add("in-view"); io.unobserve(en.target); }
+          }, { threshold: 0.35 });
+          targets.forEach((t) => io.observe(t));
+        } else targets.forEach((t) => t.classList.add("in-view"));
       })();
     </script>
   </body>

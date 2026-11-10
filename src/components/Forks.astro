@@ -1,0 +1,125 @@
+---
+// One chart per indicator. The solid dark line is what has been published. From the latest
+// figure, two lines fork to the target year: where the model expects the world to be as
+// things are, and where it says its plan would put it. Older editions' forks stay, faded,
+// and real figures are marked when they arrive, so the charts fill in over the years.
+import { formatFigure, INDICATORS, resolutionYear, scoreForecast, type Forecast } from "../lib/forecast";
+
+interface Props {
+  /** Every forecast published so far. */
+  forecasts: Forecast[];
+  /** The edition whose fork is drawn at full strength and described in the text. */
+  focus: string;
+}
+const { forecasts, focus } = Astro.props;
+const all = [...forecasts].sort((a, b) => a.edition_date.localeCompare(b.edition_date));
+const current = all.find((f) => f.edition_date === focus)!;
+const scored = scoreForecast(current, all);
+
+const W = 320;
+const H = 170;
+const PAD = { l: 10, r: 62, t: 14, b: 24 };
+const yearOf = (text: string) => Number((text.match(/\b(19|20)\d{2}\b/g) ?? ["0"]).at(-1));
+
+const charts = INDICATORS.map((info) => {
+  const id = info.id;
+  // published figures, by data year; later editions overwrite earlier ones (revisions)
+  const published = new Map<number, number>();
+  for (const f of all) {
+    const ind = f.content.indicators[id - 1];
+    published.set(yearOf(ind.latest.data_year), ind.latest.value);
+  }
+  const actual = [...published.entries()].sort((a, b) => a[0] - b[0]);
+  const forks = all.map((f) => {
+    const ind = f.content.indicators[id - 1];
+    return { date: f.edition_date, from: yearOf(ind.latest.data_year), to: Number(resolutionYear(id, f.content.target_year)), ind, focus: f.edition_date === focus };
+  });
+  const xs = [...actual.map((a) => a[0]), ...forks.flatMap((f) => [f.from, f.to])];
+  const ys = [...actual.map((a) => a[1]), ...forks.flatMap((f) => [f.ind.baseline.low, f.ind.baseline.high, f.ind.with_plan.low, f.ind.with_plan.high, f.ind.latest.value])];
+  const x0 = Math.min(...xs);
+  const x1 = Math.max(...xs, x0 + 1);
+  let y0 = Math.min(...ys);
+  let y1 = Math.max(...ys);
+  const padY = (y1 - y0 || Math.abs(y1) * 0.1 || 1) * 0.12;
+  y0 -= padY;
+  y1 += padY;
+  const x = (yr: number) => PAD.l + ((yr - x0) / (x1 - x0)) * (W - PAD.l - PAD.r);
+  const y = (v: number) => PAD.t + (1 - (v - y0) / (y1 - y0)) * (H - PAD.t - PAD.b);
+  const me = forks.find((f) => f.focus)!;
+  // keep the two end labels from sitting on top of each other
+  let by = y(me.ind.baseline.value);
+  let py = y(me.ind.with_plan.value);
+  const same = me.ind.baseline.value === me.ind.with_plan.value;
+  if (!same && Math.abs(by - py) < 13) {
+    const mid = (by + py) / 2;
+    const up = by < py ? -1 : 1;
+    by = mid + up * 6.5;
+    py = mid - up * 6.5;
+  }
+  const s = scored[id - 1];
+  return { info, actual, forks, x, y, me, by, py, same, s, x0, x1 };
+});
+
+const settledCount = scored.filter((s) => s.actual).length;
+---
+<ul class="fork-key" aria-label="How to read the charts">
+  <li><svg viewBox="0 0 34 10" aria-hidden="true"><line x1="1" x2="33" y1="5" y2="5" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" /></svg>Published figures</li>
+  <li><svg viewBox="0 0 34 10" aria-hidden="true"><line x1="1" x2="33" y1="5" y2="5" stroke="var(--ink-2)" stroke-width="2" /></svg>Forecast: the world as it is</li>
+  <li><svg viewBox="0 0 34 10" aria-hidden="true"><line x1="1" x2="33" y1="5" y2="5" stroke="var(--mark)" stroke-width="2" stroke-dasharray="5 4" /></svg>Forecast: with its plan (cannot be checked)</li>
+  {settledCount > 0 && <li><svg viewBox="0 0 34 10" aria-hidden="true"><circle cx="17" cy="5" r="4" fill="var(--flag)" /></svg>What really happened</li>}
+</ul>
+
+<div class="forks">
+  {charts.map((c) => {
+    const { info, me, s } = c;
+    const gap = s.planGap;
+    const gapText = gap === 0 ? "No change" : `${gap > 0 ? "+" : "−"}${formatFigure(info.id, Math.abs(gap))}`;
+    return (
+      <section class="fork" data-reveal aria-labelledby={`fork-${info.id}`}>
+        <h3 id={`fork-${info.id}`}>{info.id}. {info.short}</h3>
+        <div class="unit">{info.unit}</div>
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${info.short}: latest ${formatFigure(info.id, me.ind.latest.value)}; forecast for ${current.content.target_year} as things are ${formatFigure(info.id, me.ind.baseline.value)}, with the plan ${formatFigure(info.id, me.ind.with_plan.value)}.`}>
+          <line class="axis" x1={PAD.l} x2={W - PAD.r} y1={H - PAD.b} y2={H - PAD.b} />
+          <text class="lbl" x={c.x(c.x0)} y={H - 8} text-anchor="start">{c.x0}</text>
+          <text class="lbl" x={c.x(me.to)} y={H - 8} text-anchor="middle">{me.to}</text>
+          {c.forks.filter((f) => !f.focus).map((f) => (
+            <g class="old">
+              <line class="base" x1={c.x(f.from)} y1={c.y(f.ind.latest.value)} x2={c.x(f.to)} y2={c.y(f.ind.baseline.value)} />
+              <line class="plan" x1={c.x(f.from)} y1={c.y(f.ind.latest.value)} x2={c.x(f.to)} y2={c.y(f.ind.with_plan.value)} />
+            </g>
+          ))}
+          <g class="reveal">
+            <line class="whisker base" x1={c.x(me.to)} x2={c.x(me.to)} y1={c.y(me.ind.baseline.low)} y2={c.y(me.ind.baseline.high)} />
+            {!c.same && <line class="whisker plan" x1={c.x(me.to) + 7} x2={c.x(me.to) + 7} y1={c.y(me.ind.with_plan.low)} y2={c.y(me.ind.with_plan.high)} />}
+            <line class="base" x1={c.x(me.from)} y1={c.y(me.ind.latest.value)} x2={c.x(me.to)} y2={c.y(me.ind.baseline.value)} />
+            {!c.same && <line class="plan" x1={c.x(me.from)} y1={c.y(me.ind.latest.value)} x2={c.x(me.to) + 7} y2={c.y(me.ind.with_plan.value)} />}
+            <circle class="dot-base" cx={c.x(me.to)} cy={c.y(me.ind.baseline.value)} r="4" />
+            {!c.same && <circle class="dot-plan" cx={c.x(me.to) + 7} cy={c.y(me.ind.with_plan.value)} r="4" />}
+            <text class="val base" x={c.x(me.to) + 16} y={c.by + 4}>{formatFigure(info.id, me.ind.baseline.value)}</text>
+            {!c.same && <text class="val plan" x={c.x(me.to) + 16} y={c.py + 4}>{formatFigure(info.id, me.ind.with_plan.value)}</text>}
+          </g>
+          {c.actual.length > 1 && <polyline class="actual" points={c.actual.map(([yr, v]) => `${c.x(yr).toFixed(1)},${c.y(v).toFixed(1)}`).join(" ")} />}
+          {c.actual.map(([yr, v]) => <circle class="dot-actual" cx={c.x(yr)} cy={c.y(v)} r="4"><title>{yr}: {formatFigure(info.id, v)}</title></circle>)}
+          {s.actual && <circle class="dot-real" cx={c.x(me.to)} cy={c.y(s.actual.value)} r="5.5"><title>Published: {formatFigure(info.id, s.actual.value)}</title></circle>}
+        </svg>
+        <dl>
+          <dt>Latest</dt><dd>{formatFigure(info.id, me.ind.latest.value)} <span class="quiet">{me.ind.latest.data_year}</span></dd>
+          <dt>As things are</dt><dd>{formatFigure(info.id, me.ind.baseline.value)} <span class="quiet">({formatFigure(info.id, me.ind.baseline.low)} to {formatFigure(info.id, me.ind.baseline.high)})</span></dd>
+          <dt>With its plan</dt><dd>{formatFigure(info.id, me.ind.with_plan.value)} <span class="quiet">({formatFigure(info.id, me.ind.with_plan.low)} to {formatFigure(info.id, me.ind.with_plan.high)})</span></dd>
+          <dt>Difference</dt><dd><span class={s.planHelps === null ? "quiet" : s.planHelps ? "gap-good" : "gap-bad"}>{gapText}</span></dd>
+          {s.actual && (
+            <>
+              <dt>What happened</dt>
+              <dd>{formatFigure(info.id, s.actual.value)} <span class={s.inside ? "tag add" : "tag drop"}>{s.inside ? "inside its range" : "outside its range"}</span></dd>
+            </>
+          )}
+        </dl>
+        <details class="why">
+          <summary>Its reasoning</summary>
+          <p>{me.ind.reasoning}</p>
+          <p>Settled by: {me.ind.resolves}</p>
+        </details>
+      </section>
+    );
+  })}
+</div>

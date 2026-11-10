@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { answeringModel, config, editions, helperModels, formatDate, kingSha, kingText, REPO_URL, schemaText } from "../lib/editions";
+import { answeringModel, config, editions, forecastSha, forecastText, helperModels, formatDate, kingSha, kingText, REPO_URL, schemaText } from "../lib/editions";
 
 const repoReady = !REPO_URL.includes("OWNER");
 const history = [...editions].reverse();
@@ -29,6 +29,19 @@ const history = [...editions].reverse();
   </ul>
   <p>It never sees previous editions. Each run starts from nothing.</p>
   <p>Runs go through Claude Code, Anthropic's command-line tool, in non-interactive mode on the site owner's computer. Its default system prompt is replaced by the one line above. Personal instructions, memory, plugins, hooks, skills and other connections are all switched off, and it runs in an empty folder. A scheduled task in the Claude desktop app starts each run; a script then validates the answer, saves it and publishes it.</p>
+
+  <h2 id="forecast">The forecast</h2>
+  <p>Straight after each edition, a second run asks the model to put numbers on its plan. It gets a second fixed prompt followed by the plan it has just written, and nothing else. For each of the ten indicators it forecasts next year's figure twice, each with an 80% range: once for the world as it is, and once for a world that carried out its plan.</p>
+  <p>The first forecast is scored when the real figure is published, using the figure a later edition reports for that year. The second can never be scored, because the plan will not happen. It is the model's estimate of its own plan and is always labelled that way. A forecast that turns out wrong stays up, marked wrong.</p>
+  <p>The forecast run happens after the edition is saved, so it cannot influence the plan. If it fails the format check twice, the edition stands without a forecast.</p>
+  <p class="small">SHA-256: <code>{forecastSha}</code></p>
+  <details class="schema">
+    <summary>Show the forecast prompt</summary>
+    <pre class="prompt">{forecastText}</pre>
+  </details>
+
+  <h2 id="pulse">The monthly measurements</h2>
+  <p>The ten indicators are official statistics, and most are published once a year, up to two years late. So the <a href="/indicators#pulse">Plan vs reality</a> page also shows three measurements that are published monthly: carbon dioxide and methane in the air from NOAA, and global temperature from NASA. A scheduled job fetches them each week. No model is involved in those numbers.</p>
 
   <h2 id="schedule">Schedule</h2>
   <p>On the 1st of January, April, July and October. If the computer is off on that day, the run happens the next time it is on, and the edition carries the date it actually ran. The model is told that date.</p>

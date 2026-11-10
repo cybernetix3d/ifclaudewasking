@@ -1,6 +1,7 @@
 ---
 import type { Edition } from "../lib/types";
-import { answeringModel, editionNumber, formatBillions, formatDate, helperModels } from "../lib/editions";
+import { answeringModel, editionNumber, forecasts, formatBillions, formatDate, getForecast, helperModels } from "../lib/editions";
+import Forks from "./Forks.astro";
 import Cites from "./Cites.astro";
 import Span from "./Span.astro";
 
@@ -12,6 +13,7 @@ const { content: c, meta } = edition;
 const decrees = [...c.decrees].sort((a, b) => a.rank - b.rank);
 const unverified = c.indicators.filter((i) => !i.verified).length;
 const n = editionNumber(edition);
+const forecast = getForecast(edition.edition_date);
 const phases: [keyof typeof c.timeline, string][] = [
   ["first_30_days", "First 30 days"],
   ["q1", "Quarter 1"],
@@ -23,7 +25,7 @@ const phases: [keyof typeof c.timeline, string][] = [
 <header class="hero">
   <p class="dateline"><b>Edition {n}</b>, {formatDate(edition.edition_date)}</p>
   <h1>If Claude was king for a year</h1>
-  <Span />
+  <Span start={edition.edition_date} />
   <p class="standfirst">{c.summary}</p>
   <ul class="runfacts">
     <li>Answered by <b>{answeringModel(edition)}</b></li>
@@ -79,6 +81,16 @@ const phases: [keyof typeof c.timeline, string][] = [
     </div>
   </article>
 ))}
+
+{forecast && (
+  <>
+    <h2 id="forecast">What it says would change by {forecast.content.target_year}</h2>
+    <p>{forecast.content.headline}</p>
+    <p class="section-note">Asked straight after writing the plan, the model forecast each indicator twice: for the world as it is, and for a world that carried out its plan. Only the first can ever be checked. Its own caveat: {forecast.content.caveat}</p>
+    <div class="breakout"><Forks forecasts={forecasts} focus={edition.edition_date} /></div>
+    <p class="section-note"><a href="/indicators">How these forecasts are scored</a></p>
+  </>
+)}
 
 <h2 id="timeline">The year, phase by phase</h2>
 <Span compact />

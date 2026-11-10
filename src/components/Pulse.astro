@@ -1,0 +1,63 @@
+---
+// Monthly public measurements, refreshed weekly. The only numbers on the site that no model
+// has touched. Each edition is marked on the line so you can see what the world did after it.
+import pulse from "../../data/pulse.json" with { type: "json" };
+import { editions } from "../lib/editions";
+
+const W = 320;
+const H = 130;
+const PAD = { l: 8, r: 8, t: 12, b: 22 };
+const toNum = (t: string) => Number(t.slice(0, 4)) + (Number(t.slice(5, 7)) - 0.5) / 12;
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const monthName = (t: string) => `${MONTHS[Number(t.slice(5, 7)) - 1]} ${t.slice(0, 4)}`;
+
+const charts = pulse.series.map((s) => {
+  const pts = s.points.map((p) => ({ x: toNum(p.t), v: p.v }));
+  const x0 = pts[0].x;
+  const x1 = Math.max(pts.at(-1)!.x, ...editions.map((e) => toNum(e.edition_date)));
+  const vs = pts.map((p) => p.v);
+  const lo = Math.min(...vs);
+  const hi = Math.max(...vs);
+  const pad = (hi - lo) * 0.08;
+  const x = (n: number) => PAD.l + ((n - x0) / (x1 - x0)) * (W - PAD.l - PAD.r);
+  const y = (v: number) => PAD.t + (1 - (v - (lo - pad)) / (hi - lo + 2 * pad)) * (H - PAD.t - PAD.b);
+  const last = s.points.at(-1)!;
+  const yearAgo = s.points.at(-13);
+  const change = yearAgo ? last.v - yearAgo.v : null;
+  const digits = s.id === "temp" ? 2 : s.id === "co2" ? 1 : 0;
+  return {
+    ...s,
+    d: pts.map((p, i) => `${i === 0 ? "M" : "L"}${x(p.x).toFixed(1)},${y(p.v).toFixed(1)}`).join(" "),
+    marks: editions.map((e, i) => ({ x: x(toNum(e.edition_date)), n: editions.length - i })),
+    startYear: s.points[0].t.slice(0, 4),
+    last,
+    lastText: last.v.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits }),
+    changeText: change === null ? null : `${change >= 0 ? "+" : "−"}${Math.abs(change).toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits })}`,
+    lastXY: [x(pts.at(-1)!.x), y(last.v)],
+  };
+});
+---
+<div class="pulse">
+  {charts.map((c) => (
+    <section data-reveal aria-labelledby={`pulse-${c.id}`}>
+      <h3 id={`pulse-${c.id}`}>{c.name}</h3>
+      <div class="now">{c.lastText} <small>{c.unit}</small></div>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${c.name}, monthly since ${c.startYear}. Latest: ${c.lastText} ${c.unit} in ${monthName(c.last.t)}.`}>
+        <line class="axis" x1={PAD.l} x2={W - PAD.r} y1={H - PAD.b} y2={H - PAD.b} />
+        {c.marks.map((m) => (
+          <>
+            <line class="edition" x1={m.x} x2={m.x} y1={PAD.t - 4} y2={H - PAD.b} />
+            {m.n === editions.length && <text class="lbl ed" x={m.x - 4} y={PAD.t + 4} text-anchor="end">Edition {m.n}</text>}
+          </>
+        ))}
+        <g class="reveal">
+          <path class="line" d={c.d} />
+          <circle cx={c.lastXY[0]} cy={c.lastXY[1]} r="3.5" fill="var(--ink)" />
+        </g>
+        <text class="lbl" x={PAD.l} y={H - 6}>{c.startYear}</text>
+        <text class="lbl" x={c.lastXY[0]} y={H - 6} text-anchor="end">{monthName(c.last.t)}</text>
+      </svg>
+      <p class="meta">{c.changeText && <>{c.changeText} in twelve months. </>}{c.note} Source: <a href={c.page} rel="noopener">{c.publisher}</a>.</p>
+    </section>
+  ))}
+</div>

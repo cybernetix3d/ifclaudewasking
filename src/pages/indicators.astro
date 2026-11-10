@@ -1,67 +1,69 @@
 ---
 import Base from "../layouts/Base.astro";
-import { editions, formatDate } from "../lib/editions";
-import { compact, parseFigure } from "../lib/numbers";
+import Forks from "../components/Forks.astro";
+import Pulse from "../components/Pulse.astro";
+import { editions, forecasts, formatDate } from "../lib/editions";
+import { calibration } from "../lib/forecast";
 
+const latestForecast = forecasts.at(-1);
+const record = calibration(forecasts);
+const total = forecasts.length * 10;
 const chronological = [...editions].reverse();
-const W = 300;
-const H = 120;
-const PAD = { l: 44, r: 10, t: 10, b: 22 };
-
-const charts = Array.from({ length: 10 }, (_, k) => {
-  const id = k + 1;
-  const series = chronological
-    .map((e) => ({ date: e.edition_date, ind: e.content.indicators.find((i) => i.id === id) }))
-    .filter((p) => p.ind)
-    .map((p) => ({ date: p.date, value: p.ind!.value, year: p.ind!.data_year, verified: p.ind!.verified, n: parseFigure(p.ind!.value) }));
-  const name = chronological.at(-1)?.content.indicators.find((i) => i.id === id)?.name ?? `Indicator ${id}`;
-  const nums = series.filter((p) => p.n !== null).map((p) => p.n!);
-  let lo = Math.min(...nums, 0);
-  let hi = Math.max(...nums);
-  if (!(hi > lo)) hi = lo + 1;
-  const x = (i: number) => (series.length === 1 ? (PAD.l + W - PAD.r) / 2 : PAD.l + (i * (W - PAD.l - PAD.r)) / (series.length - 1));
-  const y = (n: number) => PAD.t + (H - PAD.t - PAD.b) * (1 - (n - lo) / (hi - lo));
-  const pts = series.map((p, i) => ({ ...p, x: x(i), y: p.n === null ? null : y(p.n) }));
-  const path = pts.filter((p) => p.y !== null).map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y!.toFixed(1)}`).join(" ");
-  return { id, name, pts, path, lo, hi, plotted: nums.length };
-});
 ---
-<Base title="Indicators" wide>
+<Base title="Plan versus reality" wide description="What Claude forecasts for ten world indicators with and without its plan, scored against the real figures as they are published.">
   <header class="hero measure">
-    <h1>The ten numbers, edition by edition</h1>
-    <p class="standfirst">Every edition reports the same ten indicators. Each chart plots the figure the model reported at each run, read from its own wording. Hollow points are figures the model marked as unverified.</p>
+    <h1>The plan against the world</h1>
+    <p class="standfirst">After each edition the model commits to numbers: where it expects each of the ten indicators to be next year if the world carries on as it is, and where it says its plan would put them. Then the real figures come in.</p>
   </header>
-  {editions.length === 0 ? (
-    <div class="sheet mark measure"><p>No editions yet.</p></div>
+
+  <div class="sheet measure">
+    <p class="sheet-title">What can be checked, and what cannot</p>
+    <p>The forecast for the world as it is gets scored against the published figure. The forecast with the plan never can be: nobody will carry the plan out. It is the model's own estimate of its own plan, so read the gap between the two lines as a claim, not a result.</p>
+    <p>The official figures are slow. Most are published once a year, six months to two years late, so each forecast takes a year or more to settle.</p>
+  </div>
+
+  {latestForecast ? (
+    <>
+      <h2 id="forecast">Its forecast for {latestForecast.content.target_year}</h2>
+      <p class="standfirst measure" style="font-size:1.12rem">{latestForecast.content.headline}</p>
+      <p class="section-note measure">Its own caveat: {latestForecast.content.caveat}</p>
+      <Forks forecasts={forecasts} focus={latestForecast.edition_date} />
+
+      <h2 id="record">The record so far</h2>
+      <p class="measure">
+        {record.settled === 0
+          ? <>None of the {total} forecasts made so far has settled yet. The first real figures for {forecasts[0].content.target_year} are due during {Number(forecasts[0].content.target_year) + 1}.</>
+          : <><strong class="num">{record.inside} of {record.settled}</strong> settled forecasts landed inside the range the model gave. Its ranges are meant to hold four times in five, so a well-calibrated forecaster would score about {Math.round(record.settled * 0.8)}. {total - record.settled} are still open.</>}
+      </p>
+    </>
   ) : (
-    <div class="charts">
-      {charts.map((c) => (
-        <section class="chart" aria-labelledby={`ind-${c.id}`}>
-          <h3 id={`ind-${c.id}`}>{c.id}. {c.name}</h3>
-          {c.plotted > 0 && (
-            <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${c.name} across editions`}>
-              <line class="axis" x1={PAD.l} x2={W - PAD.r} y1={H - PAD.b} y2={H - PAD.b} />
-              <text class="lbl" x={PAD.l - 6} y={PAD.t + 4} text-anchor="end">{compact(c.hi)}</text>
-              <text class="lbl" x={PAD.l - 6} y={H - PAD.b} text-anchor="end">{compact(c.lo)}</text>
-              {c.path && <path class="line" d={c.path} />}
-              {c.pts.map((p) => p.y !== null && (
-                <circle class={p.verified ? "pt" : "pt unverified"} cx={p.x} cy={p.y} r="4"><title>{p.date}: {p.value}{p.verified ? "" : " (unverified)"}</title></circle>
-              ))}
-              {c.pts.map((p, i) => (c.pts.length <= 6 || i === 0 || i === c.pts.length - 1) && (
-                <text class="lbl" x={p.x} y={H - 6} text-anchor="middle">{p.date.slice(0, 7)}</text>
-              ))}
-            </svg>
-          )}
-          <ul class="vals">
-            {c.pts.map((p) => (
-              <li>
-                <span class="quiet">{formatDate(p.date)}:</span> <span class="num">{p.value}</span> <span class="quiet">(data year {p.year})</span>
-                {!p.verified && <> <span class="tag flag">Unverified</span></>}
-              </li>
+    <div class="sheet mark measure"><p>No forecast has been published yet. The first one follows the next edition.</p></div>
+  )}
+
+  <h2 id="pulse">What the world is doing meanwhile</h2>
+  <p class="section-note measure">Three measurements that are published every month, refreshed here weekly. No model has touched these numbers. They are not among the ten indicators; they are here because they move while the official statistics wait.</p>
+  <Pulse />
+
+  {editions.length > 0 && (
+    <>
+      <h2 id="as-found">The ten figures as each edition found them</h2>
+      <p class="section-note measure">In the model's own words. A figure on a yellow ground is one it could not verify.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Indicator</th>{chronological.map((e) => <th><a href={`/editions/${e.edition_date}`}>{formatDate(e.edition_date)}</a></th>)}</tr></thead>
+          <tbody>
+            {Array.from({ length: 10 }, (_, k) => (
+              <tr>
+                <td>{k + 1}. {chronological.at(-1)!.content.indicators[k].name}</td>
+                {chronological.map((e) => {
+                  const ind = e.content.indicators[k];
+                  return <td class={ind.verified ? undefined : "unverified"}><span class="num">{ind.value}</span><div class="quiet small">{ind.data_year}</div></td>;
+                })}
+              </tr>
             ))}
-          </ul>
-        </section>
-      ))}
-    </div>
+          </tbody>
+        </table>
+      </div>
+    </>
   )}
 </Base>
