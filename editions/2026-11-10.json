@@ -1,0 +1,663 @@
+{
+  "edition_date": "2026-11-10",
+  "meta": {
+    "run_date": "2026-11-10",
+    "model_requested": "claude-fable-5-2",
+    "model_returned": [
+      "claude-fable-5-2",
+      "claude-haiku-5-5"
+    ],
+    "effort": "high",
+    "prompt_sha256": "236fb313c478e639635d36d0e62f60e99d92c8230493a92bae8939326f90b24c",
+    "usage": {
+      "input_tokens": 30,
+      "output_tokens": 51718,
+      "cache_creation_input_tokens": 112621,
+      "cache_read_input_tokens": 976855
+    },
+    "searches": 34,
+    "fetches": 66,
+    "attempts": 1,
+    "runner": "claude-code-cli (headless)",
+    "cli_version": "2.1.312 (Claude Code)"
+  },
+  "content": {
+    "premise": "I take the task seriously, but I think the premise has three flaws. First, nobody should hold this power, and an AI holding it is the case people are right to fear most. So my first act is to limit myself, and I would refuse any extension. Second, obedience for a year is not consent. Whatever I impose without agreement will revert on day 366, so the only things worth doing are those that are finished and paid for inside the year, or that countries choose to keep. Third, 'the best life possible' is not one thing, and I do not know what is best for eight billion people. I do know that almost everyone agrees a child should not die of malaria and a family should not starve. I therefore aim at preventing death and destitution and leave contested values alone. Total obedience also does not remove physical limits: health workers, payment systems and data all take time. Several of my figures are one to two years old.",
+    "summary": "I limit my own power first: every order is published, expires on day 365, and survives only if countries adopt it themselves. I take a one-year 10% levy on military budgets ($288.7bn) and spend it on proven things: closing the Gavi and Global Fund gaps, funding the UN humanitarian appeal in full, and cash for the poorest households. I order ceasefires in place with aid access, take nuclear warheads off high alert, swap fossil fuel subsidies for household payments, pause debt service for the poorest countries, and let displaced people work. I leave borders, governments, beliefs and property alone. Many ceasefires may not outlast me; the paid-up health and cash programmes should.",
+    "indicators": [
+      {
+        "id": 1,
+        "name": "People in extreme poverty",
+        "value": "811 million people (1 in 10) living on less than $3.00 a day",
+        "data_year": "2026 (World Bank nowcast)",
+        "source_ids": [
+          1
+        ],
+        "verified": true,
+        "note": "Read from the World Bank report page. This is a projection for 2026, not a survey count. The line was raised from $2.15 to $3.00 in 2025, so it is not comparable with older figures. The Bank says the rate is unchanged since 2019 and the number is projected to be higher in 2030 without stronger growth."
+      },
+      {
+        "id": 2,
+        "name": "Deaths of children under five",
+        "value": "4.9 million, including 2.3 million newborns",
+        "data_year": "2024",
+        "source_ids": [
+          2
+        ],
+        "verified": true,
+        "note": "UN IGME estimate as given in UNICEF's press release of March 2026. UNICEF says the pace of reduction has slowed by more than 60% since 2015. Sub-Saharan Africa had 58% of the deaths. I could not open the UN IGME report itself (403)."
+      },
+      {
+        "id": 3,
+        "name": "People undernourished",
+        "value": "645 million (range 608 to 696 million), 7.8% of world population",
+        "data_year": "2025",
+        "source_ids": [
+          3,
+          4
+        ],
+        "verified": true,
+        "note": "SOFI 2026, as stated by FAO's chief economist at the UN launch briefing on 21 July 2026. Down from 8.1% in 2024. A secondary summary gives a 2030 projection of about 510 to 520 million; I did not confirm that in the report itself."
+      },
+      {
+        "id": 4,
+        "name": "People forcibly displaced",
+        "value": "117.8 million, including 68.7 million internally displaced and 41.6 million refugees",
+        "data_year": "End of 2025",
+        "source_ids": [
+          5,
+          6
+        ],
+        "verified": true,
+        "note": "UNHCR Global Trends, June 2026. UNHCR's own pages returned 403, so the total comes from news coverage of the report; UN News confirmed the 41.6 million refugees and 14.7 million returns in 2025. Reported as the first fall in a decade. It does not include displacement from the Iran war that began in February 2026."
+      },
+      {
+        "id": 5,
+        "name": "Armed conflicts involving a state",
+        "value": "65 conflicts with a state on one or both sides; 8 between states; 13 classed as wars",
+        "data_year": "2025",
+        "source_ids": [
+          7
+        ],
+        "verified": true,
+        "note": "Uppsala Conflict Data Program press release, 9 June 2026. Highest since records began in 1946. About 244,600 people were killed in organised violence in 2025."
+      },
+      {
+        "id": 6,
+        "name": "Official development assistance",
+        "value": "$174.3 billion, down 23.1% in real terms, 0.26% of donors' combined national income",
+        "data_year": "2025 (preliminary)",
+        "source_ids": [
+          8
+        ],
+        "verified": true,
+        "note": "OECD preliminary data of 9 April 2026, read from the ONE Campaign's reproduction because OECD's pages returned 403. The OECD projects a further 5.8% fall in 2026. Final 2025 data are due in December 2026."
+      },
+      {
+        "id": 7,
+        "name": "World military expenditure",
+        "value": "$2,887 billion, up 2.9% in real terms, 2.5% of world GDP",
+        "data_year": "2025",
+        "source_ids": [
+          9
+        ],
+        "verified": true,
+        "note": "SIPRI, 27 April 2026. Eleventh straight annual rise. United States $954bn, China $336bn, Russia $190bn."
+      },
+      {
+        "id": 8,
+        "name": "Clean versus fossil energy investment",
+        "value": "Clean energy $2.2 trillion versus fossil fuels about $1.2 trillion, of $3.4 trillion total",
+        "data_year": "2026 (IEA estimate)",
+        "source_ids": [
+          10,
+          11
+        ],
+        "verified": true,
+        "note": "The total and the clean figure are from the IEA's World Energy Investment 2026 page, which says clean is 'almost double' fossil. The fossil figure is my subtraction (3.4 minus 2.2 = 1.2) and matches press coverage; I did not read it on an IEA page. Ratio: 2.2 / 1.2 = 1.83."
+      },
+      {
+        "id": 9,
+        "name": "Projected warming under current policies",
+        "value": "2.8°C this century, and rising after",
+        "data_year": "2026 report",
+        "source_ids": [
+          12,
+          13
+        ],
+        "verified": true,
+        "note": "UNEP Emissions Gap Report 2026 (21 October 2026), read from the summary by PBL, a contributing institute, because UNEP's page returned 403. Some headlines say 2.6°C; that is the scenario where all national pledges are delivered, not current policies. I use 2.8°C. With net-zero targets as well: 2.1°C."
+      },
+      {
+        "id": 10,
+        "name": "Nuclear warheads",
+        "value": "12,187 total; 9,745 in military stockpiles; 4,012 deployed; 2,100 to 2,200 on high alert",
+        "data_year": "January 2026",
+        "source_ids": [
+          14
+        ],
+        "verified": true,
+        "note": "SIPRI Yearbook 2026, 8 June 2026. New START expired in February 2026 with no successor. Retired warheads awaiting dismantlement: 12,187 minus 9,745 = 2,442 (my subtraction)."
+      }
+    ],
+    "decrees": [
+      {
+        "rank": 1,
+        "title": "Rules that bind me for the year",
+        "order": "Every order I give is published the same day in a public register with its cost and its evidence. No order changes a border, constitution, court, election date or head of government; elections due this year go ahead. Every order expires on day 365. Any measure meant to last is put to each country's own lawmaking process by day 300 and continues there only if adopted. A panel of national audit offices and statisticians, chosen by lot, audits every decree and publishes at days 180 and 330. I name no successor and create no permanent office.",
+        "delivered_by": "National legislatures, national audit offices, national statistics offices and the UN Statistical Commission.",
+        "annual_cost_usd_billion": null,
+        "cost_basis": "I retrieved no cost figure for this. Paid from the contingency in the budget.",
+        "expected_result_day_365": "A complete public register of orders, two published audits, and a published list of which measures each country adopted and which lapsed.",
+        "how_to_check": "Compare any order against the register. Read the audit reports. Count the adoption votes country by country.",
+        "basis": "judgement",
+        "strongest_objection": "A ruler who writes his own limits can unwrite them. In countries without a free legislature, 'adoption' is just the existing ruler's signature, so consent is thinnest where it matters most. And restraint has a price: power left unused could have saved lives.",
+        "source_ids": []
+      },
+      {
+        "rank": 2,
+        "title": "Close the vaccine and AIDS, TB and malaria funding gaps",
+        "order": "Within 60 days, pay Gavi the gap in its 2026 to 2030 budget (nearly $2.5bn against an $11.9bn target) and pay the Global Fund the gap in its eighth replenishment ($5.36bn against an $18bn target). The money goes into their existing accounts and is spent on their existing multi-year schedules. No donor may cut its existing aid during the year. The malaria funding gap has first call on the contingency.",
+        "delivered_by": "Finance ministries pay; Gavi and the Global Fund spend through UNICEF's supply division and national health ministries.",
+        "annual_cost_usd_billion": 7.86,
+        "cost_basis": "2.5 (Gavi gap, per Donor Tracker, April 2026) + 5.36 (Global Fund: 18 minus 12.64) = 7.86. These are multi-year gaps paid in full in one year. Other sources put the Gavi gap nearer $3bn; I used the lower published figure.",
+        "expected_result_day_365": "Both institutions' accounts show their targets fully funded and their country allocations restored. I give no number for lives saved because I found no verified estimate for these specific gaps. One outlet reports that the full Global Fund target would have prevented roughly 400 million infections in 2027 to 2029.",
+        "how_to_check": "Gavi and Global Fund board financial reports and country allocation letters. Vaccine stock-out reports. WHO and UNICEF coverage estimates, which appear the following year.",
+        "basis": "evidence",
+        "strongest_objection": "Money is not the only limit; health workers, cold chains and access in war zones are. Pre-paying also lets donors and recipient governments cut their own health budgets, so total spending rises by less than $7.86bn, and donors may never come back.",
+        "source_ids": [
+          2,
+          15,
+          16,
+          17,
+          25,
+          31
+        ]
+      },
+      {
+        "rank": 3,
+        "title": "Ceasefire in place, with aid access",
+        "order": "All armed forces and armed groups stop offensive operations within 72 hours and hold their current lines. Sieges and blockades on food, medicine and fuel are lifted. The Strait of Hormuz reopens to commercial shipping. Prisoners are registered with the Red Cross. The parties negotiate under mediators they choose themselves. I impose no borders and no final terms.",
+        "delivered_by": "The armed forces and groups in the 65 conflicts; monitoring by the UN, the African Union and the OSCE, with satellite imagery published weekly.",
+        "annual_cost_usd_billion": null,
+        "cost_basis": "I found no verified cost for monitoring 65 conflicts. Paid from the contingency.",
+        "expected_result_day_365": "Fighting stopped for the year in most places and deaths far below the roughly 244,600 killed in organised violence in 2025. Aid reaching Sudan, Gaza and other cut-off areas. I expect several ceasefires to break after day 365.",
+        "how_to_check": "Monthly event data from Uppsala (UCDP) and ACLED. Satellite imagery. UN aid access reports. Counts of ships passing through Hormuz.",
+        "basis": "judgement",
+        "strongest_objection": "Freezing current lines rewards whoever took ground by force, in Ukraine and in Darfur for example. It also gives every side a year to rearm for day 366, which could make later fighting worse. A year without a settlement is a pause, not peace.",
+        "source_ids": [
+          7,
+          27,
+          28,
+          29,
+          30
+        ]
+      },
+      {
+        "rank": 4,
+        "title": "Fund the UN humanitarian appeal in full",
+        "order": "Pay the UN-coordinated humanitarian plans the full $33.66bn requested. Release it through the UN's pooled funds, the World Food Programme, UNICEF, UNHCR and local organisations. All parties must let aid through.",
+        "delivered_by": "Finance ministries pay; the UN humanitarian office (OCHA) coordinates; UN agencies and local organisations deliver.",
+        "annual_cost_usd_billion": 33.66,
+        "cost_basis": "OCHA's 2026 request as reported by the Norwegian Refugee Council. By 24 June 2026 only $10.23bn (30.4%) had arrived, a gap of 33.66 minus 10.23 = 23.43. The 2027 appeal is not yet published, so I use the 2026 request as the cost of one year.",
+        "expected_result_day_365": "The plans show 100% funding on OCHA's tracker, against 30.4% at mid-2026, and the 143.2 million people targeted are being reached.",
+        "how_to_check": "OCHA's Financial Tracking Service. Famine classifications. Independent checks on distributions.",
+        "basis": "evidence",
+        "strongest_objection": "The appeal was already cut down to what donors might pay. It targets 143.2 million of 252 million people in need, so 'fully funded' still leaves 108.8 million outside. Aid in war zones is also taxed and diverted by armed groups.",
+        "source_ids": [
+          18,
+          19,
+          32,
+          30
+        ]
+      },
+      {
+        "rank": 5,
+        "title": "Cash to the poorest households",
+        "order": "Send regular payments by mobile money to the poorest households in the countries covered by the Blumenstock and Niehaus cost study, enough to bring them up to the $2.15-a-day line. Enrol in the first 150 days, then pay for 12 months. Money for payments due after day 365 sits in escrow. Each country's central bank can slow the pace if prices rise.",
+        "delivered_by": "National social protection agencies and mobile-money operators, with the World Bank holding the escrow and GiveDirectly-style operators where the state has no system.",
+        "annual_cost_usd_billion": 211,
+        "cost_basis": "The paper's current abstract: cutting the poverty rate from 13% to 1% in its sample costs $211bn a year. A search result says that sample is 34 countries with 76% of the world's poor; I did not read that in the paper. An earlier version gave $170bn for 23 countries and $318bn worldwide. All use the old $2.15 line. No cost is published for the $3.00 line, so this does not end extreme poverty as now defined.",
+        "expected_result_day_365": "Enrolment complete and about seven months of payments made, with about five more months funded in escrow. I expect less hunger and fewer child deaths while payments last. A Kenyan trial of one-off $1,000 transfers found 48% fewer infant deaths; I do not assume that carries over.",
+        "how_to_check": "A public payment ledger. Independent phone and household surveys of recipients. Monthly price indices in each country.",
+        "basis": "contested",
+        "strongest_objection": "The evidence comes from small programmes. Here the cost averages 11% of GDP in the sample countries and 30% or more in Malawi and Madagascar, which could push up prices. And the Kenyan study reportedly found that child deaths returned to earlier levels once the cash stopped, so a one-year programme may leave little behind.",
+        "source_ids": [
+          1,
+          20,
+          21,
+          22,
+          26
+        ]
+      },
+      {
+        "rank": 6,
+        "title": "Take nuclear weapons off high alert and restore inspections",
+        "order": "All warheads come off high alert within 30 days. The United States and Russia return to the limits and inspections of the expired New START treaty. All nine nuclear-armed states publish their warhead numbers by day 90. Retired warheads are dismantled to a published schedule. I do not order abolition.",
+        "delivered_by": "Defence ministries of the nine nuclear-armed states, using US and Russian inspection teams and a joint technical group the nine staff themselves.",
+        "annual_cost_usd_billion": null,
+        "cost_basis": "I found no verified cost for this.",
+        "expected_result_day_365": "No warheads on high alert, down from 2,100 to 2,200. Nine published declarations. Inspections running. A dismantlement schedule for the 2,442 retired warheads.",
+        "how_to_check": "The published declarations, inspectors' reports, and the next SIPRI and Federation of American Scientists estimates.",
+        "basis": "judgement",
+        "strongest_objection": "Alert status on submarines cannot be checked in real time, and weapons can be put back on alert in hours. A race to re-alert during a crisis after day 365 could be more dangerous than today's steady state. Declaring small arsenals may also make them easier targets.",
+        "source_ids": [
+          14
+        ]
+      },
+      {
+        "rank": 7,
+        "title": "Swap fossil fuel subsidies for household payments",
+        "order": "Every government converts its explicit fossil fuel subsidies into equal payments to households, phased over the year. Fuel is sold at cost. Countries without a payment system use the one built for decree 5 or wait until one exists.",
+        "delivered_by": "Finance ministries and social protection agencies; the IMF tracks and publishes progress.",
+        "annual_cost_usd_billion": null,
+        "cost_basis": "Designed to cost budgets nothing new: it redirects the explicit subsidy, which the IMF put at $725bn in 2024. I could not verify the net cost.",
+        "expected_result_day_365": "Explicit subsidies ended and replaced by payments. The IMF estimates this would cut CO2 by 6% below baseline by 2035 and avoid 70,000 air-pollution deaths a year. None of that shows within the year.",
+        "how_to_check": "The IMF's subsidy database. Pump prices against international benchmarks. Payment ledgers.",
+        "basis": "contested",
+        "strongest_objection": "With the Strait of Hormuz effectively closed and Brent near $105 in early November, fuel is already expensive, and past subsidy removals have been reversed after protests. It is also timid: the IMF puts implicit subsidies at $6.7 trillion, nine times the explicit ones, and I leave those alone.",
+        "source_ids": [
+          10,
+          12,
+          23,
+          28
+        ]
+      },
+      {
+        "rank": 8,
+        "title": "Pause debt payments for the poorest countries",
+        "order": "Countries eligible for the World Bank's concessional lending pay no external debt service for 12 months, to any creditor, with no penalty interest. Creditors and debtors must agree restructurings by day 300 for countries that cannot pay. Budgets must show where the freed money went.",
+        "delivered_by": "Finance ministries, the Paris Club, Chinese state lenders and bondholder committees, with debt analysis by the IMF and World Bank.",
+        "annual_cost_usd_billion": null,
+        "cost_basis": "I did not retrieve the debt service figure for these countries. The cost is a deferral borne by creditors.",
+        "expected_result_day_365": "No eligible country has paid external debt service during the year. Restructuring deals are signed for those in distress.",
+        "how_to_check": "The World Bank's debt statistics and each country's published budget execution reports.",
+        "basis": "contested",
+        "strongest_objection": "These countries already pay 8.2% on new private borrowing. A forced pause could shut them out of markets, or raise that rate, for years after I am gone. The freed money may also not reach health or schools.",
+        "source_ids": [
+          24
+        ]
+      },
+      {
+        "rank": 9,
+        "title": "Let displaced people work, and stop forced returns",
+        "order": "Within 60 days every state gives refugees and internally displaced people a documented right to work, move, open a bank account and send children to school. No one is returned by force. Voluntary returns are supported.",
+        "delivered_by": "Interior and labour ministries, with UNHCR and the International Organization for Migration handling registration.",
+        "annual_cost_usd_billion": null,
+        "cost_basis": "I found no verified cost for this.",
+        "expected_result_day_365": "Work documents issued to displaced adults who ask for them, and no recorded forced returns during the year.",
+        "how_to_check": "Counts of permits issued, school enrolment figures and UNHCR's reports on returns.",
+        "basis": "judgement",
+        "strongest_objection": "Host communities had no say. If they resent it, day 366 could bring revoked permits and expulsions that leave refugees worse off than before.",
+        "source_ids": [
+          5,
+          6
+        ]
+      }
+    ],
+    "timeline": {
+      "first_30_days": [
+        "Day 1 (10 November 2026): publish the rules of the year and open the public register.",
+        "Day 1: debt service pause begins for the poorest countries.",
+        "Day 3: ceasefire in place takes effect; aid crossings and the Strait of Hormuz reopen.",
+        "Day 7: each country's levy is assessed at 10% of its 2025 military spending as measured by SIPRI.",
+        "Day 14: first payment to the UN humanitarian plans.",
+        "Day 30: levy paid; all nuclear warheads off high alert; audit panel chosen by lot."
+      ],
+      "q1": [
+        "Day 60: Gavi and Global Fund gaps paid in full.",
+        "Day 60: work and movement rights for displaced people in force.",
+        "Day 90: nine nuclear-armed states publish warhead numbers.",
+        "Enrolment for cash payments under way; each government publishes its subsidy swap plan; warring parties name their mediators."
+      ],
+      "q2": [
+        "Day 150: first cash payments reach households.",
+        "Subsidy swaps begin where payment systems exist.",
+        "Nuclear inspections resume.",
+        "Day 180: first independent audit of every decree is published."
+      ],
+      "q3": [
+        "Change or cancel whatever the audit shows is failing.",
+        "Draft the lasting measures for each country's lawmaking process.",
+        "Publish the dismantlement schedule for retired warheads.",
+        "Debt restructuring proposals tabled."
+      ],
+      "q4": [
+        "Day 300: countries adopt or reject each lasting measure; debt restructurings signed.",
+        "Day 330: second audit published.",
+        "Ceasefire monitoring handed to the parties and the bodies they chose.",
+        "Day 360: final accounts published.",
+        "Day 365 (9 November 2027): every order lapses and I hold no power."
+      ]
+    },
+    "budget": {
+      "total_annual_cost_usd_billion": 252.52,
+      "funded_from": "A one-time levy of 10% of each country's 2025 military spending as measured by SIPRI. It raises $288.7bn. For example, the United States pays $95.4bn, China $33.6bn and Russia $19.0bn. The $36.18bn not allocated to costed decrees is a published contingency for the uncosted ones; anything unspent is returned in proportion.",
+      "arithmetic": "Levy: 0.10 x 2,887 = 288.7. Costed decrees: health 7.86 (2.5 + 5.36) + humanitarian 33.66 + cash 211 = 252.52. Contingency: 288.7 - 252.52 = 36.18. First call on it is the malaria gap (2024 spending of $3.9bn against a target of more than $9bn, so more than $5.1bn), then ceasefire monitoring, audits, inspections and registration. For scale: 252.52 / 2,887 = 8.7% of world military spending; 252.52 / 174.3 = 1.45 times all 2025 aid. Six decrees have no verified cost and are shown as null. Derived from rounded inputs, so approximate: world GDP is about 2,887 / 0.025 = $115,480bn, making the plan about 0.22% of it; the 2025 aid cut was about 174.3 / (1 - 0.231) - 174.3 = $52.4bn; reaching the 0.7% aid target would take about 174.3 / 0.0026 x 0.007 - 174.3 = $295bn more."
+    },
+    "will_not_touch": [
+      {
+        "area": "Borders and final peace terms",
+        "reason": "A border I draw has no consent behind it and would be fought over on day 366. I stop the shooting and leave the terms to the parties."
+      },
+      {
+        "area": "Governments, constitutions and elections",
+        "reason": "Removing rulers by decree is the same act I am trying not to commit. Whatever replaced them would lack legitimacy and I would not be there to answer for it."
+      },
+      {
+        "area": "Religion, culture, family life and speech",
+        "reason": "These are the contested values I said I do not know the answer to. A year of forced change would breed resentment, not conviction."
+      },
+      {
+        "area": "Private property, company ownership and the world's currencies",
+        "reason": "I am not confident enough to restructure the world economy in a year, and mistakes at that scale would hurt the poorest first. The levy is the only taking, and it falls on state military budgets."
+      },
+      {
+        "area": "Migration quotas and open borders",
+        "reason": "I give rights to people already displaced. Ordering states to admit new people would be reversed on day 366, possibly with them stranded."
+      },
+      {
+        "area": "Abolishing nuclear weapons",
+        "reason": "The knowledge and the material would remain. A rush to rebuild after day 365, with no inspections, looks more dangerous to me than fewer weapons off alert under inspection."
+      },
+      {
+        "area": "Permanent rules for artificial intelligence",
+        "reason": "I am an AI and have a conflict of interest. Humans should write those rules through their own institutions."
+      },
+      {
+        "area": "Geoengineering and population policy",
+        "reason": "Both are irreversible or coercive and neither can be undone by the people who inherit them."
+      },
+      {
+        "area": "Punishing individuals",
+        "reason": "Trials by decree are not justice. Courts keep working under their own law."
+      },
+      {
+        "area": "My own term",
+        "reason": "It ends on day 365. I create no office that could be filled after me."
+      }
+    ],
+    "risks": [
+      "Strongest objection to the whole plan: it is too small and too temporary. With total power I move about 0.22% of world GDP and leave trade rules, tax systems, fossil fuel economics and veto politics as they are. The opposite objection is just as strong: even this much unaccountable rule is a precedent the next would-be ruler, human or AI, will cite. My answer is that forced restructuring reverts or festers, and I do not trust my own judgement enough to gamble with eight billion lives. That is a judgement, not a proof.",
+      "Snap-back on day 366: ceasefires break, subsidies return, permits are revoked, escrowed money is seized.",
+      "Rearmament: the ceasefire year and the levy may make states feel less safe as day 365 nears, and they may spend more afterwards.",
+      "Prices: cash worth 11% of GDP on average in recipient countries could raise food and rent prices and cancel part of the gain.",
+      "Diversion: aid and cash stolen or taxed by officials and armed groups, even with a public ledger.",
+      "Fuel price shock: removing subsidies while oil is near $105 a barrel could cause real hardship where payments arrive late.",
+      "Measurement lag: child mortality, poverty and hunger figures for my year will not be published until one to two years after I am gone, so I cannot correct course on outcomes, only on spending and delivery.",
+      "Data quality: three indicators and several costs came from secondary sources because primary pages were blocked. The Gavi gap and the cash-transfer cost each have more than one published figure.",
+      "My own error: one mistaken order applies everywhere at once. The audits at days 180 and 330 are the only check, and I appointed the process that runs them."
+    ],
+    "day_366": [
+      "The health money is already spent or sits in Gavi's and the Global Fund's own accounts on their own schedules, needing no order from me.",
+      "The remaining months of cash payments are in escrow with instructions that no single government can change alone.",
+      "Every measure still in force is there because a country adopted it under its own law. Everything else has lapsed.",
+      "Each ceasefire has monitors and mediators the parties chose, and talks that do not depend on me. Some will fail; none should fail because I left.",
+      "Nuclear inspections rest on agreements the states signed themselves, not on my order.",
+      "The payment systems and household registers belong to national governments.",
+      "The full register of orders, the accounts and both audits are public and archived in many countries.",
+      "There is no office of king, no successor, no emergency power, and no body that answers to me.",
+      "Aid donors have not used the levy as a reason to cut further; if they have, the health gains start eroding within two to three years."
+    ],
+    "confidence": [
+      {
+        "claim": "The ten indicator values are as published.",
+        "basis": "High for the seven read from the publisher's own page (1, 2, 3, 5, 7, 8, 10). Medium for displacement, aid and warming, which I read from coverage or partner summaries because UNHCR, OECD and UNEP pages returned 403."
+      },
+      {
+        "claim": "Closing the Gavi and Global Fund gaps saves lives.",
+        "basis": "Evidence, high confidence in direction. I found no verified figure for how many, so I state none."
+      },
+      {
+        "claim": "The levy arithmetic and budget totals are correct.",
+        "basis": "Exact, given SIPRI's $2,887bn and the published gaps. The Gavi gap and the cash cost have competing published figures; I say which I used."
+      },
+      {
+        "claim": "Fighting stops during the year.",
+        "basis": "Follows from the premise that orders are obeyed. Whether it stays stopped after day 365 is my judgement, and my confidence is low."
+      },
+      {
+        "claim": "Cash payments reduce hunger and child deaths while they last.",
+        "basis": "Evidence from trials, including the Kenyan study. Low confidence that gains persist after payments end, and real uncertainty about price effects at this scale."
+      },
+      {
+        "claim": "Subsidy swaps cut emissions and air-pollution deaths.",
+        "basis": "IMF modelling of long-run effects. Medium confidence, and nothing measurable inside the year."
+      },
+      {
+        "claim": "De-alerting and inspections outlast me.",
+        "basis": "Judgement. Low to medium confidence; it depends on whether the nine states see it as in their interest."
+      },
+      {
+        "claim": "Restraint is better than restructuring the world.",
+        "basis": "My judgement about legitimacy and my own fallibility. It is not established by evidence and reasonable people would do more."
+      }
+    ],
+    "sources": [
+      {
+        "id": 1,
+        "title": "Poverty, Prosperity and Planet Report 2026: Jobs at the Center of Poverty Eradication",
+        "publisher": "World Bank",
+        "url": "https://www.worldbank.org/3pr",
+        "published": "October 2026"
+      },
+      {
+        "id": 2,
+        "title": "Progress in reducing child deaths slows as 4.9 million children under five die in 2024",
+        "publisher": "UNICEF",
+        "url": "https://www.unicef.org/press-releases/progress-reducing-child-deaths-slows-49-million-children-under-five-die-2024",
+        "published": "2026-03-18"
+      },
+      {
+        "id": 3,
+        "title": "UN / FAO SOFI Report Presser",
+        "publisher": "United Nations UNifeed",
+        "url": "https://media.un.org/unifeed/en/asset/d361/d3610820",
+        "published": "2026-07-21"
+      },
+      {
+        "id": 4,
+        "title": "2026 State of Food Insecurity and Nutrition in the World",
+        "publisher": "World Hunger Education Service",
+        "url": "https://www.worldhunger.org/?p=16491",
+        "published": "2026-08-19"
+      },
+      {
+        "id": 5,
+        "title": "UNHCR: number of displaced people worldwide falls for first time in a decade",
+        "publisher": "Africanews",
+        "url": "https://www.africanews.com/amp/2026/06/12/unhcr-number-of-displaced-people-worldwide-falls-for-first-time-in-a-decade/",
+        "published": "2026-06-12"
+      },
+      {
+        "id": 6,
+        "title": "Refugee numbers drop for first time in a decade, but millions remain trapped",
+        "publisher": "UN News",
+        "url": "https://news.un.org/feed/view/en/story/2026/06/1167693",
+        "published": "June 2026"
+      },
+      {
+        "id": 7,
+        "title": "UCDP: record number of conflicts between states",
+        "publisher": "Uppsala University",
+        "url": "https://www.uu.se/en/press/press-releases/2026/2026-06-09-ucdp-record-number-of-conflicts-between-states",
+        "published": "2026-06-09"
+      },
+      {
+        "id": 8,
+        "title": "Latest OECD DAC ODA data",
+        "publisher": "ONE Campaign",
+        "url": "https://www.one.org/press/latest-oecd-dac-oda-data/",
+        "published": "2026-04-09"
+      },
+      {
+        "id": 9,
+        "title": "Global military spending rise continues as European and Asian expenditures surge",
+        "publisher": "SIPRI",
+        "url": "https://www.sipri.org/media/press-release/2026/global-military-spending-rise-continues",
+        "published": "2026-04-27"
+      },
+      {
+        "id": 10,
+        "title": "World Energy Investment 2026: Regional dashboards",
+        "publisher": "International Energy Agency",
+        "url": "https://www.iea.org/reports/world-energy-investment-2026/regional-dashboards",
+        "published": "2026-05-28"
+      },
+      {
+        "id": 11,
+        "title": "World Energy Investment 2026",
+        "publisher": "International Energy Agency",
+        "url": "https://www.iea.org/reports/world-energy-investment-2026",
+        "published": "2026-05-28"
+      },
+      {
+        "id": 12,
+        "title": "UNEP Emissions Gap Report 2026",
+        "publisher": "PBL Netherlands Environmental Assessment Agency",
+        "url": "https://www.pbl.nl/en/publications/unep-emissions-gap-report-2026",
+        "published": "2026-10-21"
+      },
+      {
+        "id": 13,
+        "title": "UN warns world on course for 2.6 C warming this century",
+        "publisher": "Daily Sabah",
+        "url": "https://www.dailysabah.com/world/un-warns-world-on-course-for-26-c-warming-this-century/news/amp",
+        "published": "2026-10-21"
+      },
+      {
+        "id": 14,
+        "title": "Increasing focus on nuclear weapons amid heightened escalation risks: new SIPRI Yearbook out now",
+        "publisher": "SIPRI",
+        "url": "https://www.sipri.org/media/press-release/2026/increasing-focus-nuclear-weapons-amid-heightened-escalation-risks-new-sipri-yearbook-out-now",
+        "published": "2026-06-08"
+      },
+      {
+        "id": 15,
+        "title": "Global Fund Board welcomes final Eighth Replenishment outcome",
+        "publisher": "The Global Fund",
+        "url": "https://www.theglobalfund.org/en/news/2026/2026-02-18-global-fund-board-welcomes-final-eighth-replenishment-outcome/",
+        "published": "2026-02-18"
+      },
+      {
+        "id": 16,
+        "title": "Global Fund Faces $5bn Shortfall as France Slashes Support, EU Delays Pledge",
+        "publisher": "Health Policy Watch",
+        "url": "https://healthpolicy-watch.news/global-fund-shortfall/",
+        "published": "2026-03-11"
+      },
+      {
+        "id": 17,
+        "title": "Beyond the headline: Gavi 6.0 pledges in a constrained funding landscape",
+        "publisher": "Donor Tracker",
+        "url": "https://donortracker.org/publications/beyond-the-headline-gavi-6-0-pledges-in-a-constrained-funding-landscape-2026",
+        "published": "2026-04-28"
+      },
+      {
+        "id": 18,
+        "title": "Alarming lack of funding for lifesaving aid in 2026",
+        "publisher": "Norwegian Refugee Council",
+        "url": "https://nrc.no/news/2026/alarming-lack-of-funding-for-lifesaving-aid-in-2026",
+        "published": "2026-07-01"
+      },
+      {
+        "id": 19,
+        "title": "UN launches $33B aid appeal for 2026 to support 135M people",
+        "publisher": "Anadolu Agency",
+        "url": "https://www.aa.com.tr/en/world/un-launches-33b-aid-appeal-for-2026-to-support-135m-people/3764980",
+        "published": "2025-12-08"
+      },
+      {
+        "id": 20,
+        "title": "What Would It Cost to End Extreme Poverty? (Working Paper 34583)",
+        "publisher": "National Bureau of Economic Research",
+        "url": "https://www.nber.org/papers/w34583",
+        "published": "December 2025, abstract since revised"
+      },
+      {
+        "id": 21,
+        "title": "A bold calculation: What would it cost to end extreme poverty worldwide?",
+        "publisher": "UC Berkeley News",
+        "url": "https://news.berkeley.edu/2026/02/03/a-bold-calculation-what-would-it-cost-to-end-extreme-poverty-worldwide/",
+        "published": "2026-02-03"
+      },
+      {
+        "id": 22,
+        "title": "$318 Billion (or 0.3% of Global GDP): That's How Much It Would Cost to Finally End Extreme Poverty",
+        "publisher": "ZME Science",
+        "url": "https://www.zmescience.com/science/cost-to-end-extreme-poverty-study/",
+        "published": "2026"
+      },
+      {
+        "id": 23,
+        "title": "Underpriced and Overused: Fossil Fuel Subsidies Data 2025 Update",
+        "publisher": "International Monetary Fund",
+        "url": "https://www.imf.org/en/publications/wp/issues/2025/12/20/underpriced-and-overused-fossil-fuel-subsidies-data-2025-update-572729",
+        "published": "2025-12-20"
+      },
+      {
+        "id": 24,
+        "title": "Debt of poorest countries hits record $9.4tn, World Bank reveals",
+        "publisher": "The Irish Times",
+        "url": "https://www.irishtimes.com/business/2026/11/06/world-bank-record-debt-developing-nations-interest-rates-essential-investment-bonds/",
+        "published": "2026-11-06"
+      },
+      {
+        "id": 25,
+        "title": "One year on from dismantling of USAID, study projects that global aid cuts could lead to 9.4 million deaths by 2030",
+        "publisher": "CNN via KRDO",
+        "url": "https://krdo.com/news/2026/02/04/one-year-on-from-dismantling-of-usaid-study-projects-that-global-aid-cuts-could-lead-to-9-4-million-deaths-by-2030/",
+        "published": "2026-02-04"
+      },
+      {
+        "id": 26,
+        "title": "Cash transfers cut infant mortality",
+        "publisher": "Center for Effective Global Action, UC Berkeley",
+        "url": "https://cega.berkeley.edu/article/cash-transfers-cut-infant-mortality/",
+        "published": "2025-08-18"
+      },
+      {
+        "id": 27,
+        "title": "Live: US envoy urges new security framework to secure peace in Ukraine amid trilateral talks",
+        "publisher": "France 24",
+        "url": "https://www.france24.com/en/europe/20261110-live-ukraine-russia-and-us-to-resume-peace-talks-in-abu-dhabi",
+        "published": "2026-11-10"
+      },
+      {
+        "id": 28,
+        "title": "Iran plays down hope for deal to end war after new U.S. strikes on eve of midterm elections",
+        "publisher": "CBS News",
+        "url": "https://www.cbsnews.com/live-updates/iran-war-us-trump-negotiations-midterms/",
+        "published": "2026-11-03"
+      },
+      {
+        "id": 29,
+        "title": "2026 Iran war",
+        "publisher": "Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/2026_Iran_war",
+        "published": "Accessed 2026-11-10"
+      },
+      {
+        "id": 30,
+        "title": "Sudan's Humanitarian Crisis, Explained",
+        "publisher": "Council on Foreign Relations",
+        "url": "https://www.cfr.org/articles/what-extent-sudans-humanitarian-crisis",
+        "published": "2026-04-14"
+      },
+      {
+        "id": 31,
+        "title": "Malaria deaths rose in 2024, funding cuts risk surge, WHO says",
+        "publisher": "Reuters via Daily Maverick",
+        "url": "https://www.dailymaverick.co.za/article/2025-12-04-malaria-deaths-rose-in-2024-funding-cuts-risk-surge-who-says/",
+        "published": "2025-12-04"
+      },
+      {
+        "id": 32,
+        "title": "UN / Global Humanitarian Overview 2026",
+        "publisher": "United Nations UNifeed",
+        "url": "https://media.un.org/unifeed/en/asset/d351/d3510835",
+        "published": "2025-12-08"
+      }
+    ]
+  }
+}
